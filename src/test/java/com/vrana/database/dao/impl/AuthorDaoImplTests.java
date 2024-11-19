@@ -1,6 +1,5 @@
-package com.vrana.database.dao;
+package com.vrana.database.dao.impl;
 
-import com.vrana.database.dao.impl.AuthorDaoImpl;
 import com.vrana.database.domain.Author;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
