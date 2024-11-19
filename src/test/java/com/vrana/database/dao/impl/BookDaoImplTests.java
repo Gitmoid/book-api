@@ -1,5 +1,6 @@
 package com.vrana.database.dao.impl;
 
+import com.vrana.database.TestDataUtil;
 import com.vrana.database.domain.Book;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,11 +25,7 @@ public class BookDaoImplTests {
 
     @Test
     public void testThatCreateBookGeneratesCorrectSql() {
-        Book book = Book.builder()
-                .isbn("978-1-2345-6789-0")
-                .title("The Shadow in the Attic")
-                .authorId(1L)
-                .build();
+        Book book = TestDataUtil.createTestBook();
 
         underTest.create(book);
 
