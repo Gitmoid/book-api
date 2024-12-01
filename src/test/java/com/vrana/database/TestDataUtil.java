@@ -8,7 +8,7 @@ import com.vrana.database.domain.entities.BookEntity;
 public final class TestDataUtil {
     private TestDataUtil() {}
 
-    public static AuthorEntity createTestAuthorA() {
+    public static AuthorEntity createTestAuthorEntityA() {
         return AuthorEntity.builder()
                 .id(1L)
                 .name("Abigail Rose")
@@ -16,7 +16,7 @@ public final class TestDataUtil {
                 .build();
     }
 
-    public static AuthorEntity createTestAuthorB() {
+    public static AuthorEntity createTestAuthorEntityB() {
         return AuthorEntity.builder()
                 .id(2L)
                 .name("Thomas Cronin")
@@ -24,7 +24,7 @@ public final class TestDataUtil {
                 .build();
     }
 
-    public static AuthorEntity createTestAuthorC() {
+    public static AuthorEntity createTestAuthorEntityC() {
         return AuthorEntity.builder()
                 .id(3L)
                 .name("Jesse A Casey")
