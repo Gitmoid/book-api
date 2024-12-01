@@ -37,7 +37,7 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    public void testThatCreateBookReturnsHttpStatus201Created() throws Exception {
+    public void testThatCreateUpdateBookReturnsHttpStatus201Created() throws Exception {
         BookDto bookDto = TestDataUtil.createTestBookDtoA(null);
         String createBookJson = objectMapper.writeValueAsString(bookDto);
 
@@ -51,7 +51,7 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    public void testThatCreateBookReturnsCreatedBook() throws Exception {
+    public void testThatCreateBookReturnsCreatedUpdateBook() throws Exception {
         BookDto bookDto = TestDataUtil.createTestBookDtoA(null);
         String createBookJson = objectMapper.writeValueAsString(bookDto);
 
@@ -79,7 +79,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatListBooksReturnsBook() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books")
@@ -94,7 +94,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatGetBookReturnsHttpStatus200WhenBookExists() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books/" + testBookEntityA.getIsbn())
@@ -115,4 +115,44 @@ public class BookControllerIntegrationTests {
                 MockMvcResultMatchers.status().isNotFound()
         );
     }
+
+    @Test
+    public void testThatUpdateBookReturnsHttpStatus200WhenBookExists() throws Exception {
+        BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
+        BookEntity savedBookEntity = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+
+        BookDto testBookA = TestDataUtil.createTestBookDtoA(null);
+        testBookA.setIsbn(savedBookEntity.getIsbn());
+        String bookJson = objectMapper.writeValueAsString(testBookA);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/" + savedBookEntity.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatUpdateBookReturnsUpdatedBook() throws Exception {
+        BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
+        BookEntity savedBookEntity = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+
+        BookDto testBookA = TestDataUtil.createTestBookDtoA(null);
+        testBookA.setIsbn(savedBookEntity.getIsbn());
+        testBookA.setTitle("UPDATED");
+        String bookJson = objectMapper.writeValueAsString(testBookA);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.put("/books/" + savedBookEntity.getIsbn())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookJson)
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.isbn").value(savedBookEntity.getIsbn())
+        ).andExpect(
+                MockMvcResultMatchers.jsonPath("$.title").value("UPDATED")
+        );
+    }
+
 }
