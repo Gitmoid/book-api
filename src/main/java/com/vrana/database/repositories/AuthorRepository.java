@@ -1,15 +1,15 @@
 package com.vrana.database.repositories;
 
-import com.vrana.database.domain.Author;
+import com.vrana.database.domain.entities.AuthorEntity;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuthorRepository extends CrudRepository<Author, Long> {
+public interface AuthorRepository extends CrudRepository<AuthorEntity, Long> {
 
-    Iterable<Author> ageLessThan(int age);
+    Iterable<AuthorEntity> ageLessThan(int age);
 
-    @Query("SELECT a from Author a where a.age > ?1") // HQL annotation is needed
-    Iterable<Author> findAuthorsWithAgeGreaterThan(int age);
+    @Query("SELECT a from AuthorEntity a where a.age > ?1") // HQL annotation is needed
+    Iterable<AuthorEntity> findAuthorsWithAgeGreaterThan(int age);
 }
