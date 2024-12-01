@@ -10,16 +10,16 @@ import javax.sql.DataSource;
 
 @SpringBootApplication
 @Log
-public class DatabaseApplication implements CommandLineRunner {
+public class BooksApiApplication implements CommandLineRunner {
 
 	private final DataSource dataSource;
 
-	public DatabaseApplication(final DataSource dataSource) {
+	public BooksApiApplication(final DataSource dataSource) {
 		this.dataSource = dataSource;
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(DatabaseApplication.class, args);
+		SpringApplication.run(BooksApiApplication.class, args);
 	}
 
 	@Override
