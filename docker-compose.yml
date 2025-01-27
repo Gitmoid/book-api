@@ -4,6 +4,7 @@ services:
 
   db:
     image: postgres
+    container_name: book-api-db
     ports:
       - "5432:5432"
     restart: always
