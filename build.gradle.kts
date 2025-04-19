@@ -31,6 +31,7 @@ dependencies {
     implementation(libs.org.mapstruct.mapstruct)
     implementation(libs.org.projectlombok.lombok.mapstruct.binding)
     implementation(libs.org.flywaydb.flyway.core)
+    implementation(libs.org.springdoc.springdoc.openapi.starter.webmvc.ui)
     runtimeOnly(libs.org.springframework.boot.spring.boot.devtools)
     runtimeOnly(libs.org.springframework.boot.spring.boot.docker.compose)
     runtimeOnly(libs.org.postgresql.postgresql)
