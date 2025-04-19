@@ -1,6 +1,7 @@
 package com.vrana.database.domain.dto;
 
 import com.vrana.database.domain.entities.AuthorEntity;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -16,9 +17,12 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BookDto {
 
+    @Schema(description = "isbn of the book", example = "978-0-571-20692-6", accessMode = Schema.AccessMode.READ_ONLY)
     private String isbn;
 
+    @Schema(description = "title of the book", example = "Laughable Loves")
     private String title;
 
+    @Schema(description = "author of the book")
     private AuthorDto author;
 }
