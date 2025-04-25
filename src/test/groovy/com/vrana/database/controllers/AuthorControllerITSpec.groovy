@@ -51,30 +51,15 @@ class AuthorControllerITSpec extends Specification {
                 .content(authorJson)
         )
 
-        then: "the response status is CREATED"
-        result.andExpect(MockMvcResultMatchers.status().isCreated())
+        then:
+        verifyAll {
+            "the response status is CREATED"
+            result.andExpect(MockMvcResultMatchers.status().isCreated())
+
+            "the body contains the created author"
+            result.andExpect(MockMvcResultMatchers.jsonPath('$.id').isNumber())
+            result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorA.getName()))
+            result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorA.getAge()))
+        }
     }
-
-    def "CreateAuthor successfully returns saved author"() {
-        given: "a new author DTO"
-        def testAuthorA = TestDataUtil.createTestAuthorEntityA()
-        testAuthorA.setId(null)
-
-        and: "the author DTO as a JSON string"
-        def authorJson = objectMapper.writeValueAsString(testAuthorA)
-
-        when: "a POST request is made to create the author"
-        def result = mockMvc.perform(
-                MockMvcRequestBuilders.post("/authors")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(authorJson)
-        )
-
-        then: "the body contains the created author"
-        result.andExpect(MockMvcResultMatchers.jsonPath('$.id').isNumber())
-        result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorA.getName()))
-        result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorA.getAge()))
-    }
-
-
 }
