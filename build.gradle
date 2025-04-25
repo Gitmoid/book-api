@@ -73,7 +73,16 @@ dependencies {
     testImplementation(
             'org.springframework.boot:spring-boot-starter-test',
             "org.spockframework:spock-core:${spockVersion}",
-            "org.junit.jupiter:junit-jupiter:${junitVersion}"
+            "org.spockframework:spock-spring:${spockVersion}",
+            "org.junit.jupiter:junit-jupiter:${junitVersion}",
     )
+
+    // Containers
+    testImplementation(
+            'org.springframework.boot:spring-boot-testcontainers',
+            'org.testcontainers:postgresql',
+            'org.testcontainers:junit-jupiter'
+    )
+
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
