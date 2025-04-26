@@ -2,7 +2,6 @@ package com.vrana.database.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.vrana.database.TestDataUtil
-import com.vrana.database.domain.entities.AuthorEntity
 import com.vrana.database.services.AuthorService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -256,5 +255,29 @@ class AuthorControllerITSpec extends Specification {
         result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(savedAuthor.getAge()))
     }
 
+    def "DeleteAuthor returns HttpStatus 204 NO CONTENT when author exists"() {
+        given: "a new author is saved in the repository"
+        def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
+        def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
+        when: "a DELETE request is made to delete an author"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/authors/${savedAuthor.getId()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 204 NO CONTENT"
+        result.andExpect(MockMvcResultMatchers.status().isNoContent())
+    }
+
+    def "DeleteAuthor returns HttpStatus 204 NO CONTENT when author does not exists"() {
+        when: "a DELETE request is made to delete a non-existing author"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/authors/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 204 NO CONTENT"
+        result.andExpect(MockMvcResultMatchers.status().isNoContent())
+    }
 }
