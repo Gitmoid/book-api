@@ -51,8 +51,8 @@ class AuthorControllerITSpec extends Specification {
         when: "a POST request is made to create the author"
         def result = mockMvc.perform(
                 MockMvcRequestBuilders.post("/authors")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(authorJson)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorJson)
         )
 
         then:
@@ -86,7 +86,7 @@ class AuthorControllerITSpec extends Specification {
         when: "a GET request is made to retrieve all authors"
         def result = mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors")
-                .contentType(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
         )
 
         then: "the response is a list of authors with matching author body"
@@ -98,7 +98,7 @@ class AuthorControllerITSpec extends Specification {
     def "GetAuthor returns HttpStatus 200 OK when author exists"() {
         given: "a new author is saved in the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
-        AuthorEntity savedAuthor = authorService.saveAuthor(testAuthorEntityA)
+        def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
         when: "a GET request is made to retrieve the author"
         def result = mockMvc.perform(
@@ -111,11 +111,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "GetAuthor returns HttpStatus 404 NOT FOUND when author does not exist"() {
-        given: "a new author is saved in the repository"
-        def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
-        authorService.saveAuthor(testAuthorEntityA)
-
-        when: "a GET request is made to retrieve the author"
+        when: "a GET request is made to retrieve a non-existing author"
         def result = mockMvc.perform(
                 MockMvcRequestBuilders.get("/authors/999")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -128,7 +124,7 @@ class AuthorControllerITSpec extends Specification {
     def "GetAuthor returns correct author when author exists"() {
         given: "a new author is saved in the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
-        AuthorEntity savedAuthor = authorService.saveAuthor(testAuthorEntityA)
+        def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
         when: "a GET request is made to retrieve the author"
         def result = mockMvc.perform(
@@ -140,6 +136,64 @@ class AuthorControllerITSpec extends Specification {
         result.andExpect(MockMvcResultMatchers.jsonPath('$.id').value(savedAuthor.getId()))
         result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorEntityA.getName()))
         result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorEntityA.getAge()))
+    }
+
+    def "FullUpdateAuthor returns HttpStatus 200 OK when author exists"() {
+        given: "a new author is saved in the repository"
+        def testAuthorEntityB = TestDataUtil.createTestAuthorEntityB()
+        def savedAuthor = authorService.saveAuthor(testAuthorEntityB)
+
+        and: "a different author body represented as a JSON string"
+        def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
+        def authorDtoJson = objectMapper.writeValueAsString(testAuthorDtoA)
+
+        when: "a PUT request is made to update saved authorB with authorA body"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/${savedAuthor.getId()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoJson)
+        )
+
+        then: "the response status is 200 OK"
+        result.andExpect(MockMvcResultMatchers.status().isOk())
+    }
+
+    def "FullUpdateAuthor returns HttpStatus 404 NOT FOUND when author does not exist"() {
+        given: "an author body represented as a JSON string"
+        def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
+        def authorDtoJson = objectMapper.writeValueAsString(testAuthorDtoA)
+
+        when: "a PUT request is made to update a non-existing author"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoJson)
+        )
+
+        then: "the response status is 404 NOT FOUND"
+        result.andExpect(MockMvcResultMatchers.status().isNotFound())
+    }
+
+    def "FullUpdateAuthor returns correct author when author exists"() {
+        given: "a new author is saved in the repository"
+        def testAuthorEntityB = TestDataUtil.createTestAuthorEntityB()
+        def savedAuthor = authorService.saveAuthor(testAuthorEntityB)
+
+        and: "a different author body represented as a JSON string"
+        def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
+        def authorDtoJson = objectMapper.writeValueAsString(testAuthorDtoA)
+
+        when: "a PUT request is made to update saved authorB with authorA body"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.put("/authors/${savedAuthor.getId()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoJson)
+        )
+
+        then: "the saved author body matches the retrieved author body"
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.id').value(savedAuthor.getId()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorDtoA.getName()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorDtoA.getAge()))
     }
 
 
