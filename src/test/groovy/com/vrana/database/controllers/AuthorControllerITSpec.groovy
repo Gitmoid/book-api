@@ -196,5 +196,65 @@ class AuthorControllerITSpec extends Specification {
         result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorDtoA.getAge()))
     }
 
+    def "PartialUpdateAuthor returns HttpStatus 200 OK when author exists"() {
+        given: "a new author is saved in the repository"
+        def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
+        def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
+
+        and: "author body with a different name represented as a JSON string"
+        def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
+        testAuthorDtoA.setName("UPDATED")
+        def authorDtoJson = objectMapper.writeValueAsString(testAuthorDtoA)
+
+        when: "a PATCH request is made to update the saved author's name"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.patch("/authors/${savedAuthor.getId()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoJson)
+        )
+
+        then: "the response status is 200 OK"
+        result.andExpect(MockMvcResultMatchers.status().isOk())
+    }
+
+    def "PartialUpdateAuthor returns HttpStatus 404 NOT FOUND when author does not exist"() {
+        given: "an author body represented as a JSON string"
+        def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
+        def authorDtoJson = objectMapper.writeValueAsString(testAuthorDtoA)
+
+        when: "a PATCH request is made to update a non-existing author"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.patch("/authors/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoJson)
+        )
+
+        then: "the response status is 404 NOT FOUND"
+        result.andExpect(MockMvcResultMatchers.status().isNotFound())
+    }
+
+    def "PartialUpdateAuthor returns correct author when author exists"() {
+        given: "a new author is saved in the repository"
+        def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
+        def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
+
+        and: "author body with a different name represented as a JSON string"
+        def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
+        testAuthorDtoA.setName("UPDATED")
+        def authorDtoJson = objectMapper.writeValueAsString(testAuthorDtoA)
+
+        when: "a PATCH request is made to update saved authorB with authorA body"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.patch("/authors/${savedAuthor.getId()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(authorDtoJson)
+        )
+
+        then: "the saved author body matches the retrieved author body"
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.id').value(savedAuthor.getId()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorDtoA.getName()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(savedAuthor.getAge()))
+    }
+
 
 }
