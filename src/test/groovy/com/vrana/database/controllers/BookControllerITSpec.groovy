@@ -253,4 +253,31 @@ class BookControllerITSpec extends Specification {
         result.andExpect(MockMvcResultMatchers.jsonPath('$.isbn').value(savedBook.getIsbn()))
         result.andExpect(MockMvcResultMatchers.jsonPath('$.title').value(testBookDtoA.getTitle()))
     }
+
+
+    def "DeleteBook returns HttpStatus 204 NO CONTENT when book exists"() {
+        given: "a new book is saved in the repository"
+        def testBookEntityA = TestDataUtil.createTestBookEntityA()
+        def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
+
+        when: "a DELETE request is made to delete the book"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/books/${savedBook.getIsbn()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 204 NO CONTENT"
+        result.andExpect(MockMvcResultMatchers.status().isNoContent())
+    }
+
+    def "DeleteBook returns HttpStatus 204 NO CONTENT when book does not exists"() {
+        when: "a DELETE request is made to delete a non-existing book"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.delete("/books/999-888-777")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 204 NO CONTENT"
+        result.andExpect(MockMvcResultMatchers.status().isNoContent())
+    }
 }

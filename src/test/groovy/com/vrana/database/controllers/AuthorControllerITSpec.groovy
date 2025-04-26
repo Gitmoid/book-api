@@ -200,7 +200,7 @@ class AuthorControllerITSpec extends Specification {
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
-        and: "author body with a different name represented as a JSON string"
+        and: "an author body with a different name represented as a JSON string"
         def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
         testAuthorDtoA.setName("UPDATED")
         def authorDtoJson = objectMapper.writeValueAsString(testAuthorDtoA)
@@ -237,7 +237,7 @@ class AuthorControllerITSpec extends Specification {
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
-        and: "author body with a different name represented as a JSON string"
+        and: "an author body with a different name represented as a JSON string"
         def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
         testAuthorDtoA.setName("UPDATED")
         def authorDtoJson = objectMapper.writeValueAsString(testAuthorDtoA)
@@ -260,7 +260,7 @@ class AuthorControllerITSpec extends Specification {
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
-        when: "a DELETE request is made to delete an author"
+        when: "a DELETE request is made to delete the author"
         def result = mockMvc.perform(
                 MockMvcRequestBuilders.delete("/authors/${savedAuthor.getId()}")
                         .contentType(MediaType.APPLICATION_JSON)
