@@ -2,6 +2,7 @@ package com.vrana.database.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.vrana.database.TestDataUtil
+import com.vrana.database.domain.entities.AuthorEntity
 import com.vrana.database.services.AuthorService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -40,7 +41,7 @@ class AuthorControllerITSpec extends Specification {
         postgres.isRunning()
     }
 
-    def "CreateAuthor returns HttpStatus 201 CREATED"() {
+    def "CreateAuthor returns HttpStatus 201 CREATED and the body contains the created author"() {
         given: "a new author DTO"
         def testAuthorDtoA = TestDataUtil.createTestAuthorDtoA()
 
@@ -78,7 +79,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "ListAuthors returns a list of authors"() {
-        given: "a new AuthorEntity saved in the repository"
+        given: "a new author is saved in the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         authorService.saveAuthor(testAuthorEntityA)
 
@@ -93,4 +94,53 @@ class AuthorControllerITSpec extends Specification {
         result.andExpect(MockMvcResultMatchers.jsonPath('[0].name').value(testAuthorEntityA.getName()))
         result.andExpect(MockMvcResultMatchers.jsonPath('[0].age').value(testAuthorEntityA.getAge()))
     }
+
+    def "GetAuthor returns HttpStatus 200 OK when author exists"() {
+        given: "a new author is saved in the repository"
+        def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
+        AuthorEntity savedAuthor = authorService.saveAuthor(testAuthorEntityA)
+
+        when: "a GET request is made to retrieve the author"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/${savedAuthor.getId()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 200 OK"
+        result.andExpect(MockMvcResultMatchers.status().isOk())
+    }
+
+    def "GetAuthor returns HttpStatus 404 NOT FOUND when author does not exist"() {
+        given: "a new author is saved in the repository"
+        def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
+        authorService.saveAuthor(testAuthorEntityA)
+
+        when: "a GET request is made to retrieve the author"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/999")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 404 NOT FOUND"
+        result.andExpect(MockMvcResultMatchers.status().isNotFound())
+    }
+
+    def "GetAuthor returns correct author when author exists"() {
+        given: "a new author is saved in the repository"
+        def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
+        AuthorEntity savedAuthor = authorService.saveAuthor(testAuthorEntityA)
+
+        when: "a GET request is made to retrieve the author"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/authors/${savedAuthor.getId()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the saved author body matches the retrieved author body"
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.id').value(savedAuthor.getId()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorEntityA.getName()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorEntityA.getAge()))
+    }
+
+
 }
