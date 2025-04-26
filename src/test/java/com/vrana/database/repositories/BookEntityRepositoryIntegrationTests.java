@@ -19,12 +19,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class BookEntityRepositoryIntegrationTests {
 
-    private BookRepository underTest;
-
     @Autowired
-    public BookEntityRepositoryIntegrationTests(BookRepository underTest) {
-        this.underTest = underTest;
-    }
+    private BookRepository underTest;
 
     @Test
     public void testThatBookCanBeCreatedAndRecalled() {

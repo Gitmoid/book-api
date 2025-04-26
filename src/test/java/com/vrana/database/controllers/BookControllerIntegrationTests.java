@@ -23,18 +23,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 public class BookControllerIntegrationTests {
 
+    @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
     private ObjectMapper objectMapper;
 
-    private BookService bookService;
-
     @Autowired
-    public BookControllerIntegrationTests(MockMvc mockMvc, BookService bookService) {
-        this.mockMvc = mockMvc;
-        this.bookService = bookService;
-        this.objectMapper = new ObjectMapper();
-    }
+    private BookService bookService;
 
     @Test
     public void testThatCreateUpdateBookReturnsHttpStatus201Created() throws Exception {
@@ -85,9 +81,9 @@ public class BookControllerIntegrationTests {
                 MockMvcRequestBuilders.get("/books")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].isbn").value("978-1-2345-6789-0")
+                MockMvcResultMatchers.jsonPath("$.content[0].isbn").value("978-1-2345-6789-0")
         ).andExpect(
-                MockMvcResultMatchers.jsonPath("$[0].title").value("The Shadow in the Attic")
+                MockMvcResultMatchers.jsonPath("$.content[0].title").value("The Shadow in the Attic")
         );
     }
 

@@ -4,9 +4,10 @@ import com.vrana.database.domain.dto.AuthorDto;
 import com.vrana.database.domain.dto.BookDto;
 import com.vrana.database.domain.entities.AuthorEntity;
 import com.vrana.database.domain.entities.BookEntity;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public final class TestDataUtil {
-    private TestDataUtil() {}
 
     public static AuthorEntity createTestAuthorEntityA() {
         return AuthorEntity.builder()

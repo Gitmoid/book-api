@@ -23,18 +23,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 @AutoConfigureMockMvc
 public class AuthorControllerIntegrationTests {
 
+    @Autowired
     private AuthorService authorService;
 
+    @Autowired
     private MockMvc mockMvc;
 
-    private ObjectMapper objectMapper;
-
     @Autowired
-    public AuthorControllerIntegrationTests(MockMvc mockMvc, AuthorService authorService) {
-        this.mockMvc = mockMvc;
-        this.authorService = authorService;
-        this.objectMapper = new ObjectMapper();
-    }
+    private ObjectMapper objectMapper;
 
     @Test
     public void testThatCreateAuthorSuccessfullyReturnsHttp201Created() throws Exception {

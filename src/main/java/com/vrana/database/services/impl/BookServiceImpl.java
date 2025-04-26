@@ -3,6 +3,7 @@ package com.vrana.database.services.impl;
 import com.vrana.database.domain.entities.BookEntity;
 import com.vrana.database.repositories.BookRepository;
 import com.vrana.database.services.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,13 +14,10 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private BookRepository bookRepository;
-
-    public BookServiceImpl(BookRepository bookRepository) {
-        this.bookRepository = bookRepository;
-    }
+    private final BookRepository bookRepository;
 
     @Override
     public BookEntity createUpdateBook(String isbn, BookEntity book) {

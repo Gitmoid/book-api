@@ -4,6 +4,7 @@ import com.vrana.database.domain.dto.BookDto;
 import com.vrana.database.domain.entities.BookEntity;
 import com.vrana.database.mappers.Mapper;
 import com.vrana.database.services.BookService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -13,16 +14,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 @RestController
+@RequiredArgsConstructor
 public class BookController {
 
-    private Mapper<BookEntity, BookDto> bookMapper;
+    private final Mapper<BookEntity, BookDto> bookMapper;
 
-    private BookService bookService;
-
-    public BookController(Mapper<BookEntity, BookDto> bookMapper, BookService bookService) {
-        this.bookMapper = bookMapper;
-        this.bookService = bookService;
-    }
+    private final BookService bookService;
 
     @PutMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> createUpdateBook(

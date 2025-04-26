@@ -18,12 +18,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class AuthorEntityRepositoryIntegrationTests {
 
-    private AuthorRepository underTest;
-
     @Autowired
-    public AuthorEntityRepositoryIntegrationTests(AuthorRepository underTest) {
-        this.underTest = underTest;
-    }
+    private AuthorRepository underTest;
 
     @Test
     public void testThatAuthorCanBeCreatedAndRecalled() {
