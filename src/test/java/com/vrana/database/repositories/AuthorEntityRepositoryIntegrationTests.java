@@ -78,7 +78,7 @@ public class AuthorEntityRepositoryIntegrationTests {
         AuthorEntity testAuthorEntityC = TestDataUtil.createTestAuthorEntityC();
         underTest.save(testAuthorEntityC);
 
-        Iterable<AuthorEntity> result = underTest.ageLessThan(50); // JPA is able to work out custom queries based on method name
+        Iterable<AuthorEntity> result = underTest.findByAgeLessThan(50);
         assertThat(result).containsExactly(testAuthorEntityB, testAuthorEntityC);
     }
 
@@ -91,7 +91,7 @@ public class AuthorEntityRepositoryIntegrationTests {
         AuthorEntity testAuthorEntityC = TestDataUtil.createTestAuthorEntityC();
         underTest.save(testAuthorEntityC);
 
-        Iterable<AuthorEntity> result = underTest.findAuthorsWithAgeGreaterThan(50);
+        Iterable<AuthorEntity> result = underTest.findByAgeGreaterThan(50);
         assertThat(result).containsExactly(testAuthorEntityA);
     }
 }
