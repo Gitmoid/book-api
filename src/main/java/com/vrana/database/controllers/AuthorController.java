@@ -52,7 +52,7 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> fullUpdateAuthor(
             @PathVariable("id") Long id,
             @RequestBody AuthorDto authorDto) {
-        if(!authorService.isExists(id)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if(!authorService.exists(id)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         authorDto.setId(id);
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
@@ -64,7 +64,7 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> partialUpdateAuthor(
         @PathVariable("id") Long id,
         @RequestBody AuthorDto authorDto) {
-        if (!authorService.isExists(id)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!authorService.exists(id)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
         AuthorEntity updatedAuthor = authorService.partialUpdate(id, authorEntity);
