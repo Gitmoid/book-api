@@ -65,4 +65,34 @@ class BookControllerITSpec extends Specification {
             result.andExpect(MockMvcResultMatchers.jsonPath('$.title').value(testBookDtoA.getTitle()))
         }
     }
+
+    def "ListBooks returns HttpStatus 200 OK"() {
+        when: "a GET request is made to retrieve all books"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 200 OK"
+        result.andExpect(MockMvcResultMatchers.status().isOk())
+    }
+
+    def "ListBooks returns a page of books with matching book body"() {
+        given: "a new book is saved in the repository"
+        def testBookEntityA = TestDataUtil.createTestBookEntityA()
+        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
+
+        when: "a GET request is made to retrieve a pageable of books"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/books")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response is a page of books with matching book body"
+        verifyAll {
+            result.andExpect(MockMvcResultMatchers.jsonPath('$.content').isArray())
+            result.andExpect(MockMvcResultMatchers.jsonPath('$.content[0].isbn').value(testBookEntityA.getIsbn()))
+            result.andExpect(MockMvcResultMatchers.jsonPath('$.content[0].title').value(testBookEntityA.getTitle()))
+        }
+    }
 }
