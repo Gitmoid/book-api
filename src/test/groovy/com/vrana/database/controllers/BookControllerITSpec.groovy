@@ -193,4 +193,64 @@ class BookControllerITSpec extends Specification {
         result.andExpect(MockMvcResultMatchers.jsonPath('$.isbn').value(savedBook.getIsbn()))
         result.andExpect(MockMvcResultMatchers.jsonPath('$.title').value(testBookDtoA.getTitle()))
     }
+
+
+    def "PartialUpdateBook returns HttpStatus 200 OK when book exists"() {
+        given: "a new book is saved in the repository"
+        def testBookEntityA = TestDataUtil.createTestBookEntityA()
+        def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
+
+        and: "a book body with a different title represented as a JSON string"
+        def testBookDtoA = TestDataUtil.createTestBookDtoA()
+        testBookDtoA.setTitle("UPDATED")
+        def bookDtoJson = objectMapper.writeValueAsString(testBookDtoA)
+
+        when: "a PATCH request is made to update the saved books's title"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.patch("/books/${savedBook.getIsbn()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookDtoJson)
+        )
+
+        then: "the response status is 200 OK"
+        result.andExpect(MockMvcResultMatchers.status().isOk())
+    }
+
+    def "PartialUpdateBook returns HttpStatus 404 NOT FOUND when book does not exist"() {
+        given: "a book body represented as a JSON string"
+        def testBookDtoA = TestDataUtil.createTestBookDtoA()
+        def bookDtoJson = objectMapper.writeValueAsString(testBookDtoA)
+
+        when: "a PATCH request is made to partially update a non-existing book"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.patch("/books/999-888-777")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookDtoJson)
+        )
+
+        then: "the response status is 404 NOT FOUND"
+        result.andExpect(MockMvcResultMatchers.status().isNotFound())
+    }
+
+    def "PartialUpdateBook returns correct updated book when book exists"() {
+        given: "a new book is saved in the repository"
+        def testBookEntityA = TestDataUtil.createTestBookEntityA()
+        def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
+
+        and: "a book body with a different title represented as a JSON string"
+        def testBookDtoA = TestDataUtil.createTestBookDtoA()
+        testBookDtoA.setTitle("UPDATED")
+        def bookDtoJson = objectMapper.writeValueAsString(testBookDtoA)
+
+        when: "a PATCH request is made to update the saved books's title"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.patch("/books/${savedBook.getIsbn()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookDtoJson)
+        )
+
+        then: "the saved book body matches the retrieved updated book body"
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.isbn').value(savedBook.getIsbn()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.title').value(testBookDtoA.getTitle()))
+    }
 }
