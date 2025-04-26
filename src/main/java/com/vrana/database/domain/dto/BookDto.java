@@ -1,10 +1,5 @@
 package com.vrana.database.domain.dto;
 
-import com.vrana.database.domain.entities.AuthorEntity;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
