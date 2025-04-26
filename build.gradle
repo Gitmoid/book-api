@@ -35,7 +35,6 @@ ext {
     modelMapperVersion = '3.0.0'
     springdocVersion = '2.8.6'
     spockVersion = '2.4-M6-groovy-4.0'
-    junitVersion = '5.9.2'
 }
 
 dependencies {
@@ -51,8 +50,7 @@ dependencies {
             'org.flywaydb:flyway-database-postgresql'
     )
     runtimeOnly(
-            'org.postgresql:postgresql',
-            'com.h2database:h2'
+            'org.postgresql:postgresql'
     )
 
     // Development
@@ -73,8 +71,7 @@ dependencies {
     testImplementation(
             'org.springframework.boot:spring-boot-starter-test',
             "org.spockframework:spock-core:${spockVersion}",
-            "org.spockframework:spock-spring:${spockVersion}",
-            "org.junit.jupiter:junit-jupiter:${junitVersion}",
+            "org.spockframework:spock-spring:${spockVersion}"
     )
 
     // Containers
@@ -83,6 +80,4 @@ dependencies {
             'org.testcontainers:postgresql',
             'org.testcontainers:junit-jupiter'
     )
-
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
