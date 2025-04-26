@@ -16,7 +16,6 @@ import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
 import spock.lang.Specification
 
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
@@ -24,7 +23,7 @@ class BookControllerITSpec extends Specification {
 
     @Container
     @ServiceConnection
-    static PostgreSQLContainer postgres = new PostgreSQLContainer<>("postgres:latest")
+    private static PostgreSQLContainer postgres = new PostgreSQLContainer<>("postgres:latest")
 
     @Autowired
     private MockMvc mockMvc
@@ -33,7 +32,7 @@ class BookControllerITSpec extends Specification {
     private ObjectMapper objectMapper
 
     @Autowired
-    BookService bookService
+    private BookService bookService
 
     def "connection to postgresql test container established"() {
         expect: "postgresql test container was created successfully and is running"
@@ -78,7 +77,7 @@ class BookControllerITSpec extends Specification {
     }
 
     def "ListBooks returns a page of books with matching book body"() {
-        given: "a new book is saved in the repository"
+        given: "a new book is saved to the repository"
         def testBookEntityA = TestDataUtil.createTestBookEntityA()
         bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
 
@@ -95,7 +94,7 @@ class BookControllerITSpec extends Specification {
     }
 
     def "GetBook returns HttpStatus 200 OK when book exists"() {
-        given: "a new book is saved in the repository"
+        given: "a new book is saved to the repository"
         def testBookEntityA = TestDataUtil.createTestBookEntityA()
         def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
 
@@ -121,7 +120,7 @@ class BookControllerITSpec extends Specification {
     }
 
     def "GetBook returns correct book when book exists"() {
-        given: "a new book is saved in the repository"
+        given: "a new book is saved to the repository"
         def testBookEntityA = TestDataUtil.createTestBookEntityA()
         def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
 
@@ -137,7 +136,7 @@ class BookControllerITSpec extends Specification {
     }
 
     def "FullUpdateBook returns HttpStatus 200 OK when book exists"() {
-        given: "a new book is saved in the repository"
+        given: "a new book is saved to the repository"
         def testBookEntityB = TestDataUtil.createTestBookEntityB()
         def savedBook = bookService.createUpdateBook(testBookEntityB.getIsbn(), testBookEntityB)
 
@@ -173,7 +172,7 @@ class BookControllerITSpec extends Specification {
     }
 
     def "FullUpdateBook returns correct book when book exists"() {
-        given: "a new book is saved in the repository"
+        given: "a new book is saved to the repository"
         def testBookEntityA = TestDataUtil.createTestBookEntityA()
         def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
 
@@ -196,7 +195,7 @@ class BookControllerITSpec extends Specification {
 
 
     def "PartialUpdateBook returns HttpStatus 200 OK when book exists"() {
-        given: "a new book is saved in the repository"
+        given: "a new book is saved to the repository"
         def testBookEntityA = TestDataUtil.createTestBookEntityA()
         def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
 
@@ -233,7 +232,7 @@ class BookControllerITSpec extends Specification {
     }
 
     def "PartialUpdateBook returns correct updated book when book exists"() {
-        given: "a new book is saved in the repository"
+        given: "a new book is saved to the repository"
         def testBookEntityA = TestDataUtil.createTestBookEntityA()
         def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
 
@@ -256,7 +255,7 @@ class BookControllerITSpec extends Specification {
 
 
     def "DeleteBook returns HttpStatus 204 NO CONTENT when book exists"() {
-        given: "a new book is saved in the repository"
+        given: "a new book is saved to the repository"
         def testBookEntityA = TestDataUtil.createTestBookEntityA()
         def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
 

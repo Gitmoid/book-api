@@ -23,7 +23,7 @@ class AuthorControllerITSpec extends Specification {
 
     @Container
     @ServiceConnection
-    static PostgreSQLContainer postgres = new PostgreSQLContainer<>("postgres:latest")
+    private static PostgreSQLContainer postgres = new PostgreSQLContainer<>("postgres:latest")
 
     @Autowired
     private MockMvc mockMvc
@@ -32,7 +32,7 @@ class AuthorControllerITSpec extends Specification {
     private ObjectMapper objectMapper
 
     @Autowired
-    AuthorService authorService
+    private AuthorService authorService
 
     def "connection to postgresql test container established"() {
         expect: "postgresql test container was created successfully and is running"
@@ -78,7 +78,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "ListAuthors returns a list of authors"() {
-        given: "a new author is saved in the repository"
+        given: "a new author is saved to the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         authorService.saveAuthor(testAuthorEntityA)
 
@@ -95,7 +95,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "GetAuthor returns HttpStatus 200 OK when author exists"() {
-        given: "a new author is saved in the repository"
+        given: "a new author is saved to the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
@@ -121,7 +121,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "GetAuthor returns correct author when author exists"() {
-        given: "a new author is saved in the repository"
+        given: "a new author is saved to the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
@@ -138,7 +138,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "FullUpdateAuthor returns HttpStatus 200 OK when author exists"() {
-        given: "a new author is saved in the repository"
+        given: "a new author is saved to the repository"
         def testAuthorEntityB = TestDataUtil.createTestAuthorEntityB()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityB)
 
@@ -174,7 +174,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "FullUpdateAuthor returns correct author when author exists"() {
-        given: "a new author is saved in the repository"
+        given: "a new author is saved to the repository"
         def testAuthorEntityB = TestDataUtil.createTestAuthorEntityB()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityB)
 
@@ -196,7 +196,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "PartialUpdateAuthor returns HttpStatus 200 OK when author exists"() {
-        given: "a new author is saved in the repository"
+        given: "a new author is saved to the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
@@ -233,7 +233,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "PartialUpdateAuthor returns correct author when author exists"() {
-        given: "a new author is saved in the repository"
+        given: "a new author is saved to the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
@@ -256,7 +256,7 @@ class AuthorControllerITSpec extends Specification {
     }
 
     def "DeleteAuthor returns HttpStatus 204 NO CONTENT when author exists"() {
-        given: "a new author is saved in the repository"
+        given: "a new author is saved to the repository"
         def testAuthorEntityA = TestDataUtil.createTestAuthorEntityA()
         def savedAuthor = authorService.saveAuthor(testAuthorEntityA)
 
