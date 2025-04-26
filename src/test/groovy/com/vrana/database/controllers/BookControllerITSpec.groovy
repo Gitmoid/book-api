@@ -89,10 +89,50 @@ class BookControllerITSpec extends Specification {
         )
 
         then: "the response is a page of books with matching book body"
-        verifyAll {
-            result.andExpect(MockMvcResultMatchers.jsonPath('$.content').isArray())
-            result.andExpect(MockMvcResultMatchers.jsonPath('$.content[0].isbn').value(testBookEntityA.getIsbn()))
-            result.andExpect(MockMvcResultMatchers.jsonPath('$.content[0].title').value(testBookEntityA.getTitle()))
-        }
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.content').isArray())
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.content[0].isbn').value(testBookEntityA.getIsbn()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.content[0].title').value(testBookEntityA.getTitle()))
+    }
+
+    def "GetBook returns HttpStatus 200 OK when book exists"() {
+        given: "a new book is saved in the repository"
+        def testBookEntityA = TestDataUtil.createTestBookEntityA()
+        def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
+
+        when: "a GET request is made to retrieve the book"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/${savedBook.getIsbn()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 200 OK"
+        result.andExpect(MockMvcResultMatchers.status().isOk())
+    }
+
+    def "GetBook returns HttpStatus 404 NOT FOUND when book does not exist"() {
+        when: "a GET request is made to retrieve a non-existing book"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/999-888-777")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the response status is 404 NOT FOUND"
+        result.andExpect(MockMvcResultMatchers.status().isNotFound())
+    }
+
+    def "GetBook returns correct book when book exists"() {
+        given: "a new book is saved in the repository"
+        def testBookEntityA = TestDataUtil.createTestBookEntityA()
+        def savedBook = bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA)
+
+        when: "a GET request is made to retrieve the book"
+        def result = mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/${savedBook.getIsbn()}")
+                        .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        then: "the saved book body matches the retrieved book body"
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.isbn').value(savedBook.getIsbn()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.title').value(savedBook.getTitle()))
     }
 }
