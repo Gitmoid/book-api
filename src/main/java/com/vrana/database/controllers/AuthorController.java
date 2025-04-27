@@ -2,7 +2,7 @@ package com.vrana.database.controllers;
 
 import com.vrana.database.domain.dto.AuthorDto;
 import com.vrana.database.domain.entities.AuthorEntity;
-import com.vrana.database.mappers.Mapper;
+import com.vrana.database.mappers.AuthorMapper;
 import com.vrana.database.services.AuthorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ public class AuthorController {
 
     private final AuthorService authorService;
 
-    private final Mapper<AuthorEntity, AuthorDto> authorMapper;
+    private final AuthorMapper<AuthorEntity, AuthorDto> authorMapper;
 
     @PostMapping(path = "/authors")
     public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {

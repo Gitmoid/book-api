@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface BookService {
 
-    BookEntity createUpdateBook(String isbn, BookEntity book);
+    BookEntity createUpdateBook(BookEntity book);
 
 
     List<BookEntity> findAll();

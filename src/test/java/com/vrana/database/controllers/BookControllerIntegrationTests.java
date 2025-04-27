@@ -75,7 +75,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatListBooksReturnsBook() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books")
@@ -90,7 +90,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatGetBookReturnsHttpStatus200WhenBookExists() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books/" + testBookEntityA.getIsbn())
@@ -115,7 +115,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatFullUpdateBookReturnsHttpStatus200WhenBookExists() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA);
 
         BookDto testBookA = TestDataUtil.createTestBookDtoA(null);
         testBookA.setIsbn(testBookEntityA.getIsbn());
@@ -133,7 +133,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatFullUpdateBookReturnsUpdatedBook() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA);
 
         BookDto testBookA = TestDataUtil.createTestBookDtoA(null);
         testBookA.setIsbn(testBookEntityA.getIsbn());
@@ -154,7 +154,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatPartialUpdateBookReturnsHttpStatus200WhenBookExists() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA);
 
         BookDto testBookA = TestDataUtil.createTestBookDtoA(null);
         testBookA.setTitle("UPDATED");
@@ -172,7 +172,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatPartialUpdateBookReturnsUpdatedBook() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA);
 
         BookDto testBookA = TestDataUtil.createTestBookDtoA(null);
         testBookA.setTitle("UPDATED");
@@ -202,7 +202,7 @@ public class BookControllerIntegrationTests {
     @Test
     public void testThatDeleteBookReturnsHttpStatus204WhenBookExists() throws Exception {
         BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(null);
-        bookService.createUpdateBook(testBookEntityA.getIsbn(), testBookEntityA);
+        bookService.createUpdateBook(testBookEntityA);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.delete("/books/" + testBookEntityA.getIsbn())

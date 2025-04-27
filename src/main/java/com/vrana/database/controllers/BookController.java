@@ -2,7 +2,7 @@ package com.vrana.database.controllers;
 
 import com.vrana.database.domain.dto.BookDto;
 import com.vrana.database.domain.entities.BookEntity;
-import com.vrana.database.mappers.Mapper;
+import com.vrana.database.mappers.BookMapper;
 import com.vrana.database.services.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,7 +17,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BookController {
 
-    private final Mapper<BookEntity, BookDto> bookMapper;
+    private final BookMapper<BookEntity, BookDto> bookMapper;
 
     private final BookService bookService;
 
@@ -25,9 +25,9 @@ public class BookController {
     public ResponseEntity<BookDto> createUpdateBook(
             @PathVariable("isbn") String isbn,
             @RequestBody BookDto bookDto) {
-        BookEntity bookEntity = bookMapper.mapFrom(bookDto);
+        BookEntity bookEntity = bookMapper.mapFrom(bookDto, isbn);
         boolean bookExists = bookService.exists(isbn);
-        BookEntity savedBookEntity = bookService.createUpdateBook(isbn, bookEntity);
+        BookEntity savedBookEntity = bookService.createUpdateBook(bookEntity);
         BookDto savedBookDto = bookMapper.mapTo(savedBookEntity);
 
         if(bookExists) {
@@ -43,7 +43,7 @@ public class BookController {
             @RequestBody BookDto bookDto) {
         if (!bookService.exists(isbn)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-        BookEntity bookEntity = bookMapper.mapFrom(bookDto);
+        BookEntity bookEntity = bookMapper.mapFrom(bookDto, isbn);
         BookEntity updatedBookEntity = bookService.partialUpdate(isbn, bookEntity);
         return new ResponseEntity<>(bookMapper.mapTo(updatedBookEntity), HttpStatus.OK);
     }
