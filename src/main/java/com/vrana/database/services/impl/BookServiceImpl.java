@@ -50,11 +50,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookEntity partialUpdate(BookEntity bookEntity) {
-        if (!bookRepository.existsById(bookEntity.getIsbn())) {
-            throw new EntityNotFoundException("Book does not exist");
-        }
+        BookEntity existingBook = bookRepository.getReferenceById(bookEntity.getIsbn());
 
-        BookEntity existingBook = bookRepository.findById(bookEntity.getIsbn()).get();
         if (bookEntity.getTitle() != null) {
             existingBook.setTitle(bookEntity.getTitle());
         }
