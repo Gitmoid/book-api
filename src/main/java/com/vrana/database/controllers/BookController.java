@@ -26,7 +26,7 @@ public class BookController {
             @PathVariable("isbn") String isbn,
             @RequestBody BookDto bookDto) {
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
-        boolean bookExists = bookService.isExists(isbn);
+        boolean bookExists = bookService.exists(isbn);
         BookEntity savedBookEntity = bookService.createUpdateBook(isbn, bookEntity);
         BookDto savedBookDto = bookMapper.mapTo(savedBookEntity);
 
@@ -41,7 +41,7 @@ public class BookController {
     public ResponseEntity<BookDto> partialUpdateBook(
             @PathVariable("isbn") String isbn,
             @RequestBody BookDto bookDto) {
-        if (!bookService.isExists(isbn)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (!bookService.exists(isbn)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
         BookEntity updatedBookEntity = bookService.partialUpdate(isbn, bookEntity);
