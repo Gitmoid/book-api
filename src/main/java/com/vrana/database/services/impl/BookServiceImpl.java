@@ -3,16 +3,14 @@ package com.vrana.database.services.impl;
 import com.vrana.database.domain.entities.BookEntity;
 import com.vrana.database.repositories.BookRepository;
 import com.vrana.database.services.BookService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @Service
 @RequiredArgsConstructor
@@ -27,10 +25,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookEntity> findAll() {
-        return StreamSupport.stream(bookRepository
-                .findAll()
-                .spliterator(), false)
-                .collect(Collectors.toList());
+        return new ArrayList<>(bookRepository.findAll());
     }
 
     @Override
