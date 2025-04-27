@@ -44,7 +44,7 @@ public class BookController {
         if (!bookService.exists(isbn)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
         BookEntity bookEntity = bookMapper.mapFrom(bookDto, isbn);
-        BookEntity updatedBookEntity = bookService.partialUpdate(isbn, bookEntity);
+        BookEntity updatedBookEntity = bookService.partialUpdate(bookEntity);
         return new ResponseEntity<>(bookMapper.mapTo(updatedBookEntity), HttpStatus.OK);
     }
 

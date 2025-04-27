@@ -20,7 +20,7 @@ public interface BookService {
 
     boolean exists(String isbn);
 
-    BookEntity partialUpdate(String isbn, BookEntity bookEntity);
+    BookEntity partialUpdate(BookEntity bookEntity);
 
     void delete(String isbn);
 }

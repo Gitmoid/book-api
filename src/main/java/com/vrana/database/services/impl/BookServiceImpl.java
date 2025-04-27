@@ -3,6 +3,7 @@ package com.vrana.database.services.impl;
 import com.vrana.database.domain.entities.BookEntity;
 import com.vrana.database.repositories.BookRepository;
 import com.vrana.database.services.BookService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -48,13 +49,17 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookEntity partialUpdate(String isbn, BookEntity bookEntity) {
-        bookEntity.setIsbn(isbn);
+    public BookEntity partialUpdate(BookEntity bookEntity) {
+        if (!bookRepository.existsById(bookEntity.getIsbn())) {
+            throw new EntityNotFoundException("Book does not exist");
+        }
 
-        return bookRepository.findById(isbn).map(existingBook -> {
-            Optional.ofNullable(bookEntity.getTitle()).ifPresent(existingBook::setTitle);
-            return bookRepository.save(existingBook);
-        }).orElseThrow(() -> new RuntimeException("Book does not exist"));
+        BookEntity existingBook = bookRepository.findById(bookEntity.getIsbn()).get();
+        if (bookEntity.getTitle() != null) {
+            existingBook.setTitle(bookEntity.getTitle());
+        }
+
+        return bookRepository.save(existingBook);
     }
 
     @Override
