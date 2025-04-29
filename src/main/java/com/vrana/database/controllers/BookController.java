@@ -1,5 +1,6 @@
 package com.vrana.database.controllers;
 
+import com.vrana.database.domain.dto.ApiErrorResponse;
 import com.vrana.database.domain.dto.BookDto;
 import com.vrana.database.services.BookService;
 import jakarta.validation.Valid;
@@ -37,7 +38,11 @@ public class BookController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDto.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @PostMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> createBook(
             @Parameter(
@@ -55,7 +60,14 @@ public class BookController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookDto.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Book not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @PutMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> fullUpdateBook(
             @Parameter(
@@ -70,12 +82,17 @@ public class BookController {
             description = "Updates only the fields that are present in the request body.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Book updated successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookDto.class)) }),
-            @ApiResponse(responseCode = "404", description = "Book not found",
-                    content = @Content),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDto.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Book not found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @PatchMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> partialUpdateBook(
             @Parameter(
@@ -89,8 +106,11 @@ public class BookController {
     @Operation(summary = "Get a paginated list of all books")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of books",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Page.class, subTypes = {BookDto.class}))}) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Page.class, subTypes = {BookDto.class}))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @GetMapping(path = "/books")
     public Page<BookDto> listBooks(
             @Parameter(
@@ -102,10 +122,17 @@ public class BookController {
     @Operation(summary = "Get a book by its isbn")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Book found successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookDto.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDto.class))}),
             @ApiResponse(responseCode = "404", description = "Book not found",
-                    content = @Content) })
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(responseCode = "405", description = "Method not supported",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @GetMapping(path = "/books/{isbn}")
     public ResponseEntity<BookDto> getBook(
             @Parameter(
@@ -118,8 +145,11 @@ public class BookController {
     @Operation(summary = "Delete a book")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Book deleted successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = BookDto.class)) })})
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDto.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @DeleteMapping(path = "/books/{isbn}")
     public ResponseEntity<HttpStatus> deleteBook(
             @Parameter(

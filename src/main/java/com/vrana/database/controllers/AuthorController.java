@@ -1,5 +1,6 @@
 package com.vrana.database.controllers;
 
+import com.vrana.database.domain.dto.ApiErrorResponse;
 import com.vrana.database.domain.dto.AuthorDto;
 import com.vrana.database.services.AuthorService;
 import jakarta.validation.Valid;
@@ -37,7 +38,11 @@ public class AuthorController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = AuthorDto.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @PostMapping(path = "/authors")
     public ResponseEntity<AuthorDto> createAuthor(
             @Valid @RequestBody AuthorDto authorDto) {
@@ -47,8 +52,11 @@ public class AuthorController {
     @Operation(summary = "Get a list of all authors")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully retrieved the list of authors",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = AuthorDto.class))}) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDto.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @GetMapping(path = "/authors")
     public List<AuthorDto> listAuthors() {
         return authorService.findAllAuthors();
@@ -57,10 +65,17 @@ public class AuthorController {
     @Operation(summary = "Get an author by its id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Author found successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = AuthorDto.class)) }),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDto.class))}),
             @ApiResponse(responseCode = "404", description = "Author not found",
-                    content = @Content) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "405", description = "Method not supported",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @GetMapping(path = "/authors/{id}")
     public ResponseEntity<AuthorDto> getAuthor(
             @Parameter(
@@ -71,15 +86,20 @@ public class AuthorController {
     }
 
     @Operation(summary = "Completely update an author",
-            description = "Updates all fields of an existing author. All fields are required.")
+            description = "Updates all fields of an existing author. Fields that are not provided are set to null.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Author updated successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = AuthorDto.class)) }),
-            @ApiResponse(responseCode = "404", description = "Author not found",
-                    content = @Content),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDto.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Author not found",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @PutMapping(path = "/authors/{id}")
     public ResponseEntity<AuthorDto> fullUpdateAuthor(
             @Parameter(
@@ -94,12 +114,17 @@ public class AuthorController {
             description = "Updates only the fields that are present in the request body.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Author updated successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = AuthorDto.class)) }),
-            @ApiResponse(responseCode = "404", description = "Author not found",
-                    content = @Content),
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDto.class))}),
             @ApiResponse(responseCode = "400", description = "Invalid request body",
-                    content = @Content) })
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "Author not found",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @PatchMapping(path = "/authors/{id}")
     public ResponseEntity<AuthorDto> partialUpdateAuthor(
             @Parameter(
@@ -113,8 +138,11 @@ public class AuthorController {
     @Operation(summary = "Delete an author")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Author deleted successfully",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = AuthorDto.class)) })})
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDto.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
     @DeleteMapping(path = "authors/{id}")
     public ResponseEntity<HttpStatus> deleteAuthor(
             @Parameter(
