@@ -5,22 +5,28 @@ import com.vrana.database.TestDataUtil;
 import com.vrana.database.domain.dto.BookDto;
 import com.vrana.database.services.BookService;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 @AutoConfigureMockMvc
+@Testcontainers
+@Transactional
 public class BookControllerIntegrationTests {
+
+    @Container
+    @ServiceConnection
+    private final static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
 
     @Autowired
     private MockMvc mockMvc;
@@ -32,28 +38,35 @@ public class BookControllerIntegrationTests {
     private BookService bookService;
 
     @Test
+    public void testThatConnectionToPostgresqlTestContainerIsEstablished() {
+        postgres.isCreated();
+        postgres.isRunning();
+    }
+
+    @Test
     public void testThatCreateBookSuccessfullyReturnsHttpStatus201Created() throws Exception {
         BookDto testBookDtoA = TestDataUtil.createTestBookDtoA(null);
-        String testBookDtoAJson = objectMapper.writeValueAsString(testBookDtoA);
+        String bookAJson = objectMapper.writeValueAsString(testBookDtoA);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.put("/books")
+                MockMvcRequestBuilders.post("/books/" + testBookDtoA.getIsbn())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(testBookDtoAJson)
+                        .content(bookAJson)
         ).andExpect(
                 MockMvcResultMatchers.status().isCreated()
         );
     }
 
     @Test
-    public void testThatCreateBookSuccessfullyReturnsSavedBook() throws Exception {
+    public void testThatCreateBookSuccessfullyReturnsCreatedBook() throws Exception {
         BookDto testBookDtoA = TestDataUtil.createTestBookDtoA(null);
-        String testBookDtoAJson = objectMapper.writeValueAsString(testBookDtoA);
+        bookService.createBook(testBookDtoA.getIsbn(), testBookDtoA);
+        String bookAJson = objectMapper.writeValueAsString(testBookDtoA);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/books/" + testBookDtoA.getIsbn())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(testBookDtoAJson)
+                        .content(bookAJson)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.isbn").value(testBookDtoA.getIsbn())
         ).andExpect(
@@ -62,7 +75,7 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    public void testThatListBooksReturnsHttpStatus200() throws Exception {
+    public void testThatGetBooksReturnsHttpStatus200() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -72,7 +85,7 @@ public class BookControllerIntegrationTests {
     }
 
     @Test
-    public void testThatListBooksReturnsBook() throws Exception {
+    public void testThatGetBooksReturnsPageOfBooks() throws Exception {
         BookDto testBookDtoA = TestDataUtil.createTestBookDtoA(null);
         bookService.createBook(testBookDtoA.getIsbn(), testBookDtoA);
 
@@ -101,10 +114,8 @@ public class BookControllerIntegrationTests {
 
     @Test
     public void testThatGetBookReturnsHttpStatus404WhenNoBookExists() throws Exception {
-        BookDto testBookDtoA = TestDataUtil.createTestBookDtoA(null);
-
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/books/" + testBookDtoA.getIsbn())
+                MockMvcRequestBuilders.get("/books/999-888-777")
                         .contentType(MediaType.APPLICATION_JSON)
         ).andExpect(
                 MockMvcResultMatchers.status().isNotFound()
@@ -118,14 +129,28 @@ public class BookControllerIntegrationTests {
 
         BookDto testBookDtoB = TestDataUtil.createTestBookDtoB(null);
         testBookDtoB.setIsbn(testBookDtoA.getIsbn());
-        String bookJson = objectMapper.writeValueAsString(testBookDtoB);
+        String bookBJson = objectMapper.writeValueAsString(testBookDtoB);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/books/" + testBookDtoA.getIsbn())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(bookJson)
+                        .content(bookBJson)
         ).andExpect(
                 MockMvcResultMatchers.status().isOk()
+        );
+    }
+
+    @Test
+    public void testThatFullUpdateBookReturnsHttpStatus404WhenNoBookExists() throws Exception {
+        BookDto testBookDtoA = TestDataUtil.createTestBookDtoA(null);
+        String bookAJson = objectMapper.writeValueAsString(testBookDtoA);
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/books/999-888-777")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(bookAJson)
+        ).andExpect(
+                MockMvcResultMatchers.status().isNotFound()
         );
     }
 
@@ -136,12 +161,12 @@ public class BookControllerIntegrationTests {
 
         BookDto testBookDtoB = TestDataUtil.createTestBookDtoB(null);
         testBookDtoB.setIsbn(testBookDtoA.getIsbn());
-        String bookJson = objectMapper.writeValueAsString(testBookDtoB);
+        String bookBJson = objectMapper.writeValueAsString(testBookDtoB);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/books/" + testBookDtoA.getIsbn())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(bookJson)
+                        .content(bookBJson)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.isbn").value(testBookDtoA.getIsbn())
         ).andExpect(
@@ -156,12 +181,12 @@ public class BookControllerIntegrationTests {
 
         BookDto testBookDtoB = TestDataUtil.createTestBookDtoB(null);
         testBookDtoB.setIsbn(testBookDtoA.getIsbn());
-        String bookJson = objectMapper.writeValueAsString(testBookDtoB);
+        String bookBJson = objectMapper.writeValueAsString(testBookDtoB);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.patch("/books/" + testBookDtoA.getIsbn())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(bookJson)
+                        .content(bookBJson)
         ).andExpect(
                 MockMvcResultMatchers.status().isOk()
         );
@@ -173,12 +198,12 @@ public class BookControllerIntegrationTests {
         bookService.createBook(testBookDtoA.getIsbn(), testBookDtoA);
 
         testBookDtoA.setTitle("UPDATED");
-        String bookJson = objectMapper.writeValueAsString(testBookDtoA);
+        String bookAJson = objectMapper.writeValueAsString(testBookDtoA);
 
         mockMvc.perform(
                 MockMvcRequestBuilders.put("/books/" + testBookDtoA.getIsbn())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(bookJson)
+                        .content(bookAJson)
         ).andExpect(
                 MockMvcResultMatchers.jsonPath("$.isbn").value(testBookDtoA.getIsbn())
         ).andExpect(

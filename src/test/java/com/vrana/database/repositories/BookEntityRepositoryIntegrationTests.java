@@ -4,51 +4,63 @@ import com.vrana.database.TestDataUtil;
 import com.vrana.database.domain.entities.AuthorEntity;
 import com.vrana.database.domain.entities.BookEntity;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
+import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
-@ExtendWith(SpringExtension.class)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
+@Testcontainers
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@Transactional
 public class BookEntityRepositoryIntegrationTests {
+
+    @Container
+    @ServiceConnection
+    private final static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:latest");
 
     @Autowired
     private BookRepository underTest;
 
     @Test
+    public void testThatConnectionToPostgresqlTestContainerIsEstablished() {
+        postgres.isCreated();
+        postgres.isRunning();
+    }
+
+    @Test
     public void testThatBookCanBeCreatedAndRecalled() {
-        AuthorEntity authorEntity = TestDataUtil.createTestAuthorEntityA();
-        BookEntity bookEntity = TestDataUtil.createTestBookEntityA(authorEntity);
-        underTest.save(bookEntity);
-        Optional<BookEntity> result = underTest.findById(bookEntity.getIsbn());
+        AuthorEntity testAuthorEntityA = TestDataUtil.createTestAuthorEntityA();
+        BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(testAuthorEntityA);
+        BookEntity savedBookA = underTest.save(testBookEntityA);
+        Optional<BookEntity> result = underTest.findById(savedBookA.getIsbn());
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(bookEntity);
+        assertThat(result.get()).isEqualTo(savedBookA);
     }
 
     @Test
     public void testThatMultipleBooksCanBeCreatedAndRecalled() {
-        AuthorEntity authorEntity = TestDataUtil.createTestAuthorEntityA();
+        AuthorEntity testAuthorEntityA = TestDataUtil.createTestAuthorEntityA();
+        BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(testAuthorEntityA);
+        BookEntity testBookEntityB = TestDataUtil.createTestBookEntityB(testAuthorEntityA);
+        BookEntity testBookEntityC = TestDataUtil.createTestBookEntityC(testAuthorEntityA);
 
-        BookEntity bookEntityA = TestDataUtil.createTestBookEntityA(authorEntity);
-        underTest.save(bookEntityA);
-
-        BookEntity bookEntityB = TestDataUtil.createTestBookEntityB(authorEntity);
-        underTest.save(bookEntityB);
-
-        BookEntity bookEntityC = TestDataUtil.createTestBookEntityC(authorEntity);
-        underTest.save(bookEntityC);
+        BookEntity savedBookA = underTest.save(testBookEntityA);
+        BookEntity savedBookB = underTest.save(testBookEntityB);
+        BookEntity savedBookC = underTest.save(testBookEntityC);
 
         Iterable<BookEntity> result = underTest.findAll();
         assertThat(result)
                 .hasSize(3)
-                .containsExactly(bookEntityA, bookEntityB, bookEntityC);
+                .containsExactly(savedBookA, savedBookB, savedBookC);
     }
 
 
@@ -56,26 +68,26 @@ public class BookEntityRepositoryIntegrationTests {
     public void testThatBookCanBeUpdated() {
         AuthorEntity authorEntity = TestDataUtil.createTestAuthorEntityA();
 
-        BookEntity bookEntityA = TestDataUtil.createTestBookEntityA(authorEntity);
-        underTest.save(bookEntityA);
+        BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(authorEntity);
+        underTest.save(testBookEntityA);
 
-        bookEntityA.setTitle("UPDATED");
-        underTest.save(bookEntityA);
+        testBookEntityA.setTitle("UPDATED");
+        BookEntity savedBookA = underTest.save(testBookEntityA);
 
-        Optional<BookEntity> result = underTest.findById(bookEntityA.getIsbn());
+        Optional<BookEntity> result = underTest.findById(savedBookA.getIsbn());
         assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(bookEntityA);
+        assertThat(result.get()).isEqualTo(savedBookA);
     }
 
     @Test
     public void testThatBookCanBeDeleted() {
         AuthorEntity authorEntity = TestDataUtil.createTestAuthorEntityA();
 
-        BookEntity bookEntityA = TestDataUtil.createTestBookEntityA(authorEntity);
-        underTest.save(bookEntityA);
+        BookEntity testBookEntityA = TestDataUtil.createTestBookEntityA(authorEntity);
+        BookEntity savedBookA = underTest.save(testBookEntityA);
 
-        underTest.deleteById(bookEntityA.getIsbn());
-        Optional<BookEntity> result = underTest.findById(bookEntityA.getIsbn());
+        underTest.deleteById(savedBookA.getIsbn());
+        Optional<BookEntity> result = underTest.findById(savedBookA.getIsbn());
         assertThat(result).isEmpty();
     }
 }

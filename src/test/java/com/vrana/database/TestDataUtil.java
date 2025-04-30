@@ -11,7 +11,6 @@ public final class TestDataUtil {
 
     public static AuthorEntity createTestAuthorEntityA() {
         AuthorEntity author = new AuthorEntity();
-        author.setId(1L);
         author.setName("Abigail Rose");
         author.setAge(80);
         return author;
@@ -19,7 +18,6 @@ public final class TestDataUtil {
 
     public static AuthorEntity createTestAuthorEntityB() {
         AuthorEntity author = new AuthorEntity();
-        author.setId(1L);
         author.setName("Thomas Cronin");
         author.setAge(44);
         return author;
@@ -27,7 +25,6 @@ public final class TestDataUtil {
 
     public static AuthorEntity createTestAuthorEntityC() {
         AuthorEntity author = new AuthorEntity();
-        author.setId(3L);
         author.setName("Jesse A Casey");
         author.setAge(24);
         return author;
@@ -44,14 +41,6 @@ public final class TestDataUtil {
         AuthorDto author = new AuthorDto();
         author.setName("Thomas Cronin");
         author.setAge(44);
-        return author;
-    }
-
-    public static AuthorDto createTestAuthorDtoC() {
-        AuthorDto author = new AuthorDto();
-        author.setId(3L);
-        author.setName("Jesse A Casey");
-        author.setAge(24);
         return author;
     }
 
@@ -91,14 +80,6 @@ public final class TestDataUtil {
         BookDto book = new BookDto();
         book.setIsbn("978-1-2345-6789-1");
         book.setTitle("Beyond the Horizon");
-        book.setAuthor(authorDto);
-        return book;
-    }
-
-    public static BookDto createTestBookDtoC(final AuthorDto authorDto) {
-        BookDto book = new BookDto();
-        book.setIsbn("978-1-2345-6789-2");
-        book.setTitle("The Last Ember");
         book.setAuthor(authorDto);
         return book;
     }
