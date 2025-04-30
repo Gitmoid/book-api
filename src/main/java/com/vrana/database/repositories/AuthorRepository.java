@@ -1,11 +1,11 @@
 package com.vrana.database.repositories;
 
 import com.vrana.database.domain.entities.AuthorEntity;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AuthorRepository extends CrudRepository<AuthorEntity, Long> {
+public interface AuthorRepository extends JpaRepository<AuthorEntity, Long> {
 
     Iterable<AuthorEntity> findByAgeLessThan(int age);
 

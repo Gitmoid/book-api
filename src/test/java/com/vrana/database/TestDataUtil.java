@@ -4,21 +4,12 @@ import com.vrana.database.domain.dto.AuthorDto;
 import com.vrana.database.domain.dto.BookDto;
 import com.vrana.database.domain.entities.AuthorEntity;
 import com.vrana.database.domain.entities.BookEntity;
-import lombok.experimental.UtilityClass;
 
-@UtilityClass
 public final class TestDataUtil {
+    private TestDataUtil() {}
 
     public static AuthorEntity createTestAuthorEntityA() {
         return AuthorEntity.builder()
-                .id(1L)
-                .name("Abigail Rose")
-                .age(80)
-                .build();
-    }
-
-    public static AuthorDto createTestAuthorDtoA() {
-        return AuthorDto.builder()
                 .id(1L)
                 .name("Abigail Rose")
                 .age(80)
@@ -38,6 +29,27 @@ public final class TestDataUtil {
                 .id(3L)
                 .name("Jesse A Casey")
                 .age(24)
+                .build();
+    }
+
+    public static AuthorDto createTestAuthorDtoA() {
+        return AuthorDto.builder()
+                .name("Abigail Rose")
+                .age(80)
+                .build();
+    }
+
+    public static AuthorDto createTestAuthorDtoB() {
+        return AuthorDto.builder()
+                .name("Abigail Rose")
+                .age(80)
+                .build();
+    }
+
+    public static AuthorDto createTestAuthorDtoC() {
+        return AuthorDto.builder()
+                .name("Abigail Rose")
+                .age(80)
                 .build();
     }
 
