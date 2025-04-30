@@ -1,20 +1,19 @@
 package com.vrana.database.services;
 
-import com.vrana.database.domain.entities.AuthorEntity;
+import com.vrana.database.domain.dto.AuthorDto;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface AuthorService {
-    AuthorEntity saveAuthor(AuthorEntity author);
+    AuthorDto createAuthor(AuthorDto authorDto);
 
-    List<AuthorEntity> findAll();
+    List<AuthorDto> findAllAuthors();
 
-    Optional<AuthorEntity> findOne(Long id);
+    AuthorDto findOneOrThrow(Long id);
 
-    boolean exists(Long id);
+    AuthorDto updateFullAuthor(Long id, AuthorDto authorDto);
 
-    AuthorEntity partialUpdate(Long id, AuthorEntity authorEntity);
+    AuthorDto updatePartialAuthor(Long id, AuthorDto authorDto);
 
     void delete(Long id);
 }

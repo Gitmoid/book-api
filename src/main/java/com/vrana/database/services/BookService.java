@@ -1,26 +1,19 @@
 package com.vrana.database.services;
 
-import com.vrana.database.domain.entities.BookEntity;
+import com.vrana.database.domain.dto.BookDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Optional;
-
 public interface BookService {
+    BookDto createBook(String isbn, BookDto bookDto);
 
-    BookEntity createUpdateBook(BookEntity book);
+    Page<BookDto> findAllBooks(Pageable pageable);
 
+    BookDto findOneOrThrow(String isbn);
 
-    List<BookEntity> findAll();
+    BookDto updateFullBook(String isbn, BookDto bookDto);
 
-    Page<BookEntity> findAll(Pageable pageable);
-
-    Optional<BookEntity> findOne(String isbn);
-
-    boolean exists(String isbn);
-
-    BookEntity partialUpdate(BookEntity bookEntity);
+    BookDto updatePartialBook(String isbn, BookDto bookDto);
 
     void delete(String isbn);
 }

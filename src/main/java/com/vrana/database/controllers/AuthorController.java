@@ -1,17 +1,14 @@
 package com.vrana.database.controllers;
 
 import com.vrana.database.domain.dto.AuthorDto;
-import com.vrana.database.domain.entities.AuthorEntity;
-import com.vrana.database.mappers.AuthorMapper;
 import com.vrana.database.services.AuthorService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,58 +16,40 @@ public class AuthorController {
 
     private final AuthorService authorService;
 
-    private final AuthorMapper<AuthorEntity, AuthorDto> authorMapper;
-
     @PostMapping(path = "/authors")
-    public ResponseEntity<AuthorDto> createAuthor(@RequestBody AuthorDto author) {
-        AuthorEntity authorEntity = authorMapper.mapFrom(author);
-        AuthorEntity savedAuthorEntity = authorService.saveAuthor(authorEntity);
-        return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.CREATED);
+    public ResponseEntity<AuthorDto> createAuthor(
+            @Valid @RequestBody AuthorDto authorDto) {
+        return new ResponseEntity<>(authorService.createAuthor(authorDto), HttpStatus.CREATED);
     }
 
     @GetMapping(path = "/authors")
     public List<AuthorDto> listAuthors() {
-        List<AuthorEntity> authors = authorService.findAll();
-        return authors.stream()
-                .map(authorMapper::mapTo)
-                .collect(Collectors.toList());
+        return authorService.findAllAuthors();
     }
 
     @GetMapping(path = "/authors/{id}")
-    public ResponseEntity<AuthorDto> getAuthor(@PathVariable("id") Long id) {
-        Optional<AuthorEntity> foundAuthor = authorService.findOne(id);
-        return foundAuthor.map(authorEntity -> {
-            AuthorDto authorDto = authorMapper.mapTo(authorEntity);
-            return new ResponseEntity<>(authorDto, HttpStatus.OK);
-        }).orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<AuthorDto> getAuthor(
+            @PathVariable("id") Long id) {
+        return new ResponseEntity<>(authorService.findOneOrThrow(id), HttpStatus.OK);
     }
 
     @PutMapping(path = "/authors/{id}")
     public ResponseEntity<AuthorDto> fullUpdateAuthor(
             @PathVariable("id") Long id,
             @RequestBody AuthorDto authorDto) {
-        if(!authorService.exists(id)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        authorDto.setId(id);
-        AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
-        AuthorEntity savedAuthorEntity = authorService.saveAuthor(authorEntity);
-        return new ResponseEntity<>(authorMapper.mapTo(savedAuthorEntity), HttpStatus.OK);
+        return new ResponseEntity<>(authorService.updateFullAuthor(id, authorDto), HttpStatus.OK);
     }
 
     @PatchMapping(path = "/authors/{id}")
     public ResponseEntity<AuthorDto> partialUpdateAuthor(
-        @PathVariable("id") Long id,
-        @RequestBody AuthorDto authorDto) {
-        if (!authorService.exists(id)) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
-        AuthorEntity updatedAuthor = authorService.partialUpdate(id, authorEntity);
-        return new ResponseEntity<>(authorMapper.mapTo(updatedAuthor), HttpStatus.OK);
+            @PathVariable("id") Long id,
+            @RequestBody AuthorDto authorDto) {
+        return new ResponseEntity<>(authorService.updatePartialAuthor(id, authorDto), HttpStatus.OK);
     }
 
     @DeleteMapping(path = "authors/{id}")
-    public ResponseEntity deleteAuthor(@PathVariable("id") Long id) {
+    public ResponseEntity<HttpStatus> deleteAuthor(@PathVariable("id") Long id) {
         authorService.delete(id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
