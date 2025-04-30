@@ -6,98 +6,100 @@ import com.vrana.database.domain.entities.AuthorEntity;
 import com.vrana.database.domain.entities.BookEntity;
 
 public final class TestDataUtil {
-    private TestDataUtil() {}
+    private TestDataUtil() {
+    }
 
     public static AuthorEntity createTestAuthorEntityA() {
-        return AuthorEntity.builder()
-                .id(1L)
-                .name("Abigail Rose")
-                .age(80)
-                .build();
+        AuthorEntity author = new AuthorEntity();
+        author.setId(1L);
+        author.setName("Abigail Rose");
+        author.setAge(80);
+        return author;
     }
 
     public static AuthorEntity createTestAuthorEntityB() {
-        return AuthorEntity.builder()
-                .id(2L)
-                .name("Thomas Cronin")
-                .age(44)
-                .build();
+        AuthorEntity author = new AuthorEntity();
+        author.setId(1L);
+        author.setName("Thomas Cronin");
+        author.setAge(44);
+        return author;
     }
 
     public static AuthorEntity createTestAuthorEntityC() {
-        return AuthorEntity.builder()
-                .id(3L)
-                .name("Jesse A Casey")
-                .age(24)
-                .build();
+        AuthorEntity author = new AuthorEntity();
+        author.setId(3L);
+        author.setName("Jesse A Casey");
+        author.setAge(24);
+        return author;
     }
 
     public static AuthorDto createTestAuthorDtoA() {
-        return AuthorDto.builder()
-                .name("Abigail Rose")
-                .age(80)
-                .build();
+        AuthorDto author = new AuthorDto();
+        author.setName("Abigail Rose");
+        author.setAge(80);
+        return author;
     }
 
     public static AuthorDto createTestAuthorDtoB() {
-        return AuthorDto.builder()
-                .name("Abigail Rose")
-                .age(80)
-                .build();
+        AuthorDto author = new AuthorDto();
+        author.setName("Thomas Cronin");
+        author.setAge(44);
+        return author;
     }
 
     public static AuthorDto createTestAuthorDtoC() {
-        return AuthorDto.builder()
-                .name("Abigail Rose")
-                .age(80)
-                .build();
+        AuthorDto author = new AuthorDto();
+        author.setId(3L);
+        author.setName("Jesse A Casey");
+        author.setAge(24);
+        return author;
     }
 
     public static BookEntity createTestBookEntityA(final AuthorEntity authorEntity) {
-        return BookEntity.builder()
-                .isbn("978-1-2345-6789-0")
-                .title("The Shadow in the Attic")
-                .author(authorEntity)
-                .build();
+        BookEntity book = new BookEntity();
+        book.setIsbn("978-1-2345-6789-0");
+        book.setTitle("The Shadow in the Attic");
+        book.setAuthor(authorEntity);
+        return book;
     }
 
     public static BookEntity createTestBookEntityB(final AuthorEntity authorEntity) {
-        return BookEntity.builder()
-                .isbn("978-1-2345-6789-1")
-                .title("Beyond the Horizon")
-                .author(authorEntity)
-                .build();
+        BookEntity book = new BookEntity();
+        book.setIsbn("978-1-2345-6789-1");
+        book.setTitle("Beyond the Horizon");
+        book.setAuthor(authorEntity);
+        return book;
     }
 
     public static BookEntity createTestBookEntityC(final AuthorEntity authorEntity) {
-        return BookEntity.builder()
-                .isbn("978-1-2345-6789-2")
-                .title("The Last Ember")
-                .author(authorEntity)
-                .build();
+        BookEntity book = new BookEntity();
+        book.setIsbn("978-1-2345-6789-2");
+        book.setTitle("The Last Ember");
+        book.setAuthor(authorEntity);
+        return book;
     }
 
     public static BookDto createTestBookDtoA(final AuthorDto authorDto) {
-        return BookDto.builder()
-                .isbn("978-1-2345-6789-0")
-                .title("The Shadow in the Attic")
-                .author(authorDto)
-                .build();
+        BookDto book = new BookDto();
+        book.setIsbn("978-1-2345-6789-0");
+        book.setTitle("The Shadow in the Attic");
+        book.setAuthor(authorDto);
+        return book;
     }
 
     public static BookDto createTestBookDtoB(final AuthorDto authorDto) {
-        return BookDto.builder()
-                .isbn("978-1-2345-6789-1")
-                .title("Beyond the Horizon")
-                .author(authorDto)
-                .build();
+        BookDto book = new BookDto();
+        book.setIsbn("978-1-2345-6789-1");
+        book.setTitle("Beyond the Horizon");
+        book.setAuthor(authorDto);
+        return book;
     }
 
     public static BookDto createTestBookDtoC(final AuthorDto authorDto) {
-        return BookDto.builder()
-                .isbn("978-1-2345-6789-2")
-                .title("The Last Ember")
-                .author(authorDto)
-                .build();
+        BookDto book = new BookDto();
+        book.setIsbn("978-1-2345-6789-2");
+        book.setTitle("The Last Ember");
+        book.setAuthor(authorDto);
+        return book;
     }
 }
