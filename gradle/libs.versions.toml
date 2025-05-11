@@ -12,6 +12,7 @@ org-springframework-boot-spring-boot-starter-web = "3.3.5"
 org-springframework-boot-spring-boot-testcontainers = "3.3.5"
 org-testcontainers-junit-jupiter = "1.19.8"
 org-testcontainers-postgresql = "1.19.8"
+org-flywaydb-flyway = "11.8.0"
 
 [libraries]
 org-mapstruct-mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "org-mapstruct-mapstruct" }
@@ -28,3 +29,5 @@ org-springframework-boot-spring-boot-starter-web = { module = "org.springframewo
 org-springframework-boot-spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "org-springframework-boot-spring-boot-testcontainers" }
 org-testcontainers-junit-jupiter = { module = "org.testcontainers:junit-jupiter", version.ref = "org-testcontainers-junit-jupiter" }
 org-testcontainers-postgresql = { module = "org.testcontainers:postgresql", version.ref = "org-testcontainers-postgresql" }
+org-flywaydb-flyway-core = { module = "org.flywaydb:flyway-core", version.ref = "org-flywaydb-flyway"}
+org-flywaydb-flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "org-flywaydb-flyway"}
