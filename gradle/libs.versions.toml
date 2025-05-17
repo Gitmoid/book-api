@@ -8,7 +8,7 @@ org-testcontainers-junit-jupiter = "1.21.0"
 org-testcontainers-postgresql = "1.21.0"
 org-flywaydb-flyway = "11.8.0"
 org-spockframework-spock = "2.4-M6-groovy-4.0"
-org-springdoc-openapi-webmvc-ui = "2.6.0"
+org-springdoc-openapi-webmvc-ui = "2.8.8"
 
 [libraries]
 org-mapstruct-mapstruct = { module = "org.mapstruct:mapstruct", version.ref = "org-mapstruct-mapstruct" }
