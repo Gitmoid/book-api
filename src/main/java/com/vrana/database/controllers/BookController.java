@@ -40,6 +40,9 @@ public class BookController {
             @ApiResponse(responseCode = "400", description = "Invalid request body",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "409", description = "Book already exists",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))})})
