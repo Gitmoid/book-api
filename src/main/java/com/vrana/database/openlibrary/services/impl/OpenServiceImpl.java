@@ -1,5 +1,6 @@
 package com.vrana.database.openlibrary.services.impl;
 
+import com.vrana.database.openlibrary.dto.OpenAuthorResponse;
 import com.vrana.database.openlibrary.dto.OpenBookResponse;
 import com.vrana.database.openlibrary.services.OpenService;
 import jakarta.persistence.EntityNotFoundException;
@@ -36,5 +37,29 @@ public class OpenServiceImpl implements OpenService {
         }
 
         return openBookResponse;
+    }
+
+    @Override
+    public OpenAuthorResponse getOpenAuthorByKey() {
+        String authorKey = "/authors/OL4326321A";
+        if (authorKey.isEmpty()) {
+            return null;
+        }
+
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://openlibrary.org" + authorKey + ".json")
+                .build()
+                .toUri();
+
+        ResponseEntity<OpenAuthorResponse> response = openLibraryRestTemplate
+                .exchange(uri, HttpMethod.GET, null, OpenAuthorResponse.class);
+
+        OpenAuthorResponse openAuthorResponse = response.getBody();
+
+        if (openAuthorResponse == null) {
+            throw new EntityNotFoundException("Author not found in openlibrary with key: " + authorKey);
+        }
+
+        return openAuthorResponse;
     }
 }

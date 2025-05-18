@@ -1,5 +1,6 @@
 package com.vrana.database.openlibrary.controller;
 
+import com.vrana.database.openlibrary.dto.OpenAuthorResponse;
 import com.vrana.database.openlibrary.dto.OpenBookResponse;
 import com.vrana.database.openlibrary.services.OpenService;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -24,5 +25,11 @@ public class OpenController {
             @PathVariable("isbn") String isbn) {
 
         return new ResponseEntity<>(openService.getOpenBookByIsbn(isbn), HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/openauthors")
+    public ResponseEntity<OpenAuthorResponse> getOpenAuthor() {
+
+        return new ResponseEntity<>(openService.getOpenAuthorByKey(), HttpStatus.OK);
     }
 }
