@@ -47,6 +47,7 @@ public class BookController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))})})
     @PostMapping(path = "/books/{isbn}")
+
     public ResponseEntity<BookDto> createBook(
             @Parameter(
                     description = "book isbn",
@@ -54,6 +55,28 @@ public class BookController {
             @PathVariable("isbn") String isbn,
             @Valid @RequestBody BookDto bookDto) {
         return new ResponseEntity<>(bookService.createBook(isbn, bookDto), HttpStatus.CREATED);
+    }
+
+    @PostMapping(path = "/openbooks/{isbn}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Book from openlibrary created successfully",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid request body",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "409", description = "Book already exists",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
+    public ResponseEntity<BookDto> createOpenBook(
+            @Parameter(
+                    description = "book isbn to be fetched from openlibrary",
+                    required = true)
+            @PathVariable("isbn") String isbn) {
+        return new ResponseEntity<>(bookService.createOpenBook(isbn), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Completely update a book",

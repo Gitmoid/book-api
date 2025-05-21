@@ -7,5 +7,5 @@ public interface OpenService {
 
     OpenBookResponse getOpenBookByIsbn(String isbn);
 
-    OpenAuthorResponse getOpenAuthorByKey();
+    OpenAuthorResponse getOpenAuthorByKey(String authorKey);
 }

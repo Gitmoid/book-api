@@ -3,6 +3,8 @@ package com.vrana.database.services.impl;
 import com.vrana.database.domain.dto.AuthorDto;
 import com.vrana.database.domain.entities.AuthorEntity;
 import com.vrana.database.mappers.AuthorMapper;
+import com.vrana.database.openlibrary.dto.OpenAuthorResponse;
+import com.vrana.database.openlibrary.services.OpenService;
 import com.vrana.database.repositories.AuthorRepository;
 import com.vrana.database.services.AuthorService;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,8 +21,20 @@ public class AuthorServiceImpl implements AuthorService {
 
     private final AuthorMapper authorMapper;
 
+    private final OpenService openService;
+
     @Override
     public AuthorDto createAuthor(AuthorDto authorDto) {
+        AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
+        AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
+
+        return authorMapper.mapTo(savedAuthorEntity);
+    }
+
+    @Override
+    public AuthorDto createOpenAuthor(String authorKey) {
+        OpenAuthorResponse openAuthor = openService.getOpenAuthorByKey(authorKey);
+        AuthorDto authorDto = authorMapper.mapDtoFromOpen(openAuthor);
         AuthorEntity authorEntity = authorMapper.mapFrom(authorDto);
         AuthorEntity savedAuthorEntity = authorRepository.save(authorEntity);
 

@@ -1,9 +1,13 @@
 package com.vrana.database.services.impl;
 
+import com.vrana.database.domain.dto.AuthorDto;
 import com.vrana.database.domain.dto.BookDto;
 import com.vrana.database.domain.entities.BookEntity;
 import com.vrana.database.mappers.BookMapper;
+import com.vrana.database.openlibrary.dto.OpenBookResponse;
+import com.vrana.database.openlibrary.services.OpenService;
 import com.vrana.database.repositories.BookRepository;
+import com.vrana.database.services.AuthorService;
 import com.vrana.database.services.BookService;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,11 +24,35 @@ public class BookServiceImpl implements BookService {
 
     private final BookMapper bookMapper;
 
+    private final OpenService openService;
+
+    private final AuthorService authorService;
+
     @Override
     public BookDto createBook(String isbn, BookDto bookDto) {
         if (bookRepository.existsById(isbn)) {
             throw new EntityExistsException("Book with ISBN " + isbn + " already exists");
         }
+
+        BookEntity bookEntity = bookMapper.mapFrom(bookDto);
+        bookEntity.setIsbn(isbn);
+        BookEntity savedBookEntity = bookRepository.save(bookEntity);
+
+        return bookMapper.mapTo(savedBookEntity);
+    }
+
+    @Override
+    public BookDto createOpenBook(String isbn) {
+        if (bookRepository.existsById(isbn)) {
+            throw new EntityExistsException("Book with ISBN " + isbn + " already exists");
+        }
+
+        OpenBookResponse openBook = openService.getOpenBookByIsbn(isbn);
+        String firstAuthorKey = openBook.getAuthors().getFirst().getKey();
+        AuthorDto authorDto = authorService.createOpenAuthor(firstAuthorKey);
+
+        BookDto bookDto = bookMapper.mapDtoFromOpen(openBook);
+        bookDto.setAuthor(authorDto);
 
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
         bookEntity.setIsbn(isbn);

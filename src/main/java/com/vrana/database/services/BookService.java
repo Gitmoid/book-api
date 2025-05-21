@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 public interface BookService {
     BookDto createBook(String isbn, BookDto bookDto);
 
+    BookDto createOpenBook(String isbn);
+
     Page<BookDto> findAllBooks(Pageable pageable);
 
     BookDto findOneOrThrow(String isbn);

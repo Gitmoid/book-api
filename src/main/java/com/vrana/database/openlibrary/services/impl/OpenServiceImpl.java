@@ -5,8 +5,6 @@ import com.vrana.database.openlibrary.dto.OpenBookResponse;
 import com.vrana.database.openlibrary.services.OpenService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -40,8 +38,7 @@ public class OpenServiceImpl implements OpenService {
     }
 
     @Override
-    public OpenAuthorResponse getOpenAuthorByKey() {
-        String authorKey = "/authors/OL4326321A";
+    public OpenAuthorResponse getOpenAuthorByKey(String authorKey) {
         if (authorKey.isEmpty()) {
             return null;
         }
