@@ -7,7 +7,11 @@ import java.util.List;
 public interface AuthorService {
     AuthorDto createAuthor(AuthorDto authorDto);
 
+    AuthorDto getOrCreateAuthor(AuthorDto authorDto);
+
     AuthorDto createOpenAuthor(String authorKey);
+
+    AuthorDto getOrCreateOpenAuthor(String authorKey);
 
     List<AuthorDto> findAllAuthors();
 

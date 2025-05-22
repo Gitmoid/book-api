@@ -4,10 +4,10 @@ import com.vrana.database.domain.entities.AuthorEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface AuthorRepository extends JpaRepository<AuthorEntity, Long> {
 
-    Iterable<AuthorEntity> findByAgeLessThan(int age);
-
-    Iterable<AuthorEntity> findByAgeGreaterThan(int age);
+    Optional<AuthorEntity> findByKey(String key);
 }

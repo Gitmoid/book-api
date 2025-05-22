@@ -11,6 +11,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
@@ -19,6 +20,7 @@ import spock.lang.Specification
 @SpringBootTest
 @AutoConfigureMockMvc
 @Testcontainers
+@Transactional
 class AuthorControllerITSpec extends Specification {
 
     @Container
@@ -61,8 +63,9 @@ class AuthorControllerITSpec extends Specification {
 
             "the body contains the created author"
             result.andExpect(MockMvcResultMatchers.jsonPath('$.id').isNumber())
+            result.andExpect(MockMvcResultMatchers.jsonPath('$.key').value(testAuthorDtoA.getKey()))
             result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorDtoA.getName()))
-            result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorDtoA.getAge()))
+            result.andExpect(MockMvcResultMatchers.jsonPath('$.birthYear').value(testAuthorDtoA.getBirthYear()))
         }
     }
 
@@ -90,8 +93,9 @@ class AuthorControllerITSpec extends Specification {
 
         then: "the response is a list of authors with matching author body"
         result.andExpect(MockMvcResultMatchers.jsonPath('[0].id').isNumber())
+        result.andExpect(MockMvcResultMatchers.jsonPath('[0].key').value(testAuthorDtoA.getKey()))
         result.andExpect(MockMvcResultMatchers.jsonPath('[0].name').value(testAuthorDtoA.getName()))
-        result.andExpect(MockMvcResultMatchers.jsonPath('[0].age').value(testAuthorDtoA.getAge()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('[0].birthYear').value(testAuthorDtoA.getBirthYear()))
     }
 
     def "GetAuthor returns HttpStatus 200 OK when author exists"() {
@@ -133,8 +137,9 @@ class AuthorControllerITSpec extends Specification {
 
         then: "the saved author body matches the retrieved author body"
         result.andExpect(MockMvcResultMatchers.jsonPath('$.id').value(createdAuthorA.getId()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.key').value(testAuthorDtoA.getKey()))
         result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorDtoA.getName()))
-        result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorDtoA.getAge()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.birthYear').value(testAuthorDtoA.getBirthYear()))
     }
 
     def "FullUpdateAuthor returns HttpStatus 200 OK when author exists"() {
@@ -189,10 +194,11 @@ class AuthorControllerITSpec extends Specification {
                         .content(authorBJson)
         )
 
-        then: "the saved author body matches the retrieved author body"
+        then: "the updated author body matches the retrieved author body"
         result.andExpect(MockMvcResultMatchers.jsonPath('$.id').value(createdAuthorA.getId()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.key').value(testAuthorDtoB.getKey()))
         result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorDtoB.getName()))
-        result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(testAuthorDtoB.getAge()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.birthYear').value(testAuthorDtoB.getBirthYear()))
     }
 
     def "PartialUpdateAuthor returns HttpStatus 200 OK when author exists"() {
@@ -249,8 +255,9 @@ class AuthorControllerITSpec extends Specification {
 
         then: "the saved author body matches the retrieved author body"
         result.andExpect(MockMvcResultMatchers.jsonPath('$.id').value(createdAuthorA.getId()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.key').value(testAuthorDtoA.getKey()))
         result.andExpect(MockMvcResultMatchers.jsonPath('$.name').value(testAuthorDtoA.getName()))
-        result.andExpect(MockMvcResultMatchers.jsonPath('$.age').value(createdAuthorA.getAge()))
+        result.andExpect(MockMvcResultMatchers.jsonPath('$.birthYear').value(testAuthorDtoA.getBirthYear()))
     }
 
     def "DeleteAuthor returns HttpStatus 204 NO CONTENT when author exists"() {

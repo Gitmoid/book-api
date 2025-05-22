@@ -1,13 +1,15 @@
 package com.vrana.database.openlibrary.services.impl;
 
+import com.vrana.database.exceptions.OpenResourceNotFoundException;
 import com.vrana.database.openlibrary.dto.OpenAuthorResponse;
 import com.vrana.database.openlibrary.dto.OpenBookResponse;
 import com.vrana.database.openlibrary.services.OpenService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -25,38 +27,37 @@ public class OpenServiceImpl implements OpenService {
                 .fromUriString("https://openlibrary.org/isbn/{isbn}.json")
                 .build(isbn);
 
-        ResponseEntity<OpenBookResponse> response = openLibraryRestTemplate
-                .exchange(uri, HttpMethod.GET, null, OpenBookResponse.class);
+        try {
+            ResponseEntity<OpenBookResponse> response = openLibraryRestTemplate
+                    .exchange(uri, HttpMethod.GET, null, OpenBookResponse.class);
 
-        OpenBookResponse openBookResponse = response.getBody();
+            return response.getBody();
+        } catch (HttpClientErrorException ex) {
+            if (ex.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new OpenResourceNotFoundException("Book with ISBN" + isbn + " not found in openlibrary");
+            }
 
-        if (openBookResponse == null) {
-            throw new EntityNotFoundException("Book not found in openlibrary with isbn: " + isbn);
+            throw ex;
         }
-
-        return openBookResponse;
     }
 
     @Override
     public OpenAuthorResponse getOpenAuthorByKey(String authorKey) {
-        if (authorKey.isEmpty()) {
-            return null;
-        }
-
         URI uri = UriComponentsBuilder
-                .fromUriString("https://openlibrary.org" + authorKey + ".json")
-                .build()
-                .toUri();
+                .fromUriString("https://openlibrary.org/authors/{authorKey}.json")
+                .build(authorKey);
 
-        ResponseEntity<OpenAuthorResponse> response = openLibraryRestTemplate
-                .exchange(uri, HttpMethod.GET, null, OpenAuthorResponse.class);
+        try {
+            ResponseEntity<OpenAuthorResponse> response = openLibraryRestTemplate
+                    .exchange(uri, HttpMethod.GET, null, OpenAuthorResponse.class);
 
-        OpenAuthorResponse openAuthorResponse = response.getBody();
+            return response.getBody();
+        } catch (HttpClientErrorException ex) {
+            if (ex.getStatusCode() == HttpStatus.NOT_FOUND) {
+                throw new OpenResourceNotFoundException("Author with key " + authorKey + " not found in openlibrary");
+            }
 
-        if (openAuthorResponse == null) {
-            throw new EntityNotFoundException("Author not found in openlibrary with key: " + authorKey);
+            throw ex;
         }
-
-        return openAuthorResponse;
     }
 }

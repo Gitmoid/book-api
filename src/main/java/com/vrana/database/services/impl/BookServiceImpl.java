@@ -15,9 +15,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
@@ -43,19 +45,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto createOpenBook(String isbn) {
-        if (bookRepository.existsById(isbn)) {
-            throw new EntityExistsException("Book with ISBN " + isbn + " already exists");
+        String normalizedIsbn = isbn.replaceAll("\\D", "");
+        if (bookRepository.existsById(normalizedIsbn)) {
+            throw new EntityExistsException("Book with ISBN " + normalizedIsbn + " already exists");
         }
 
-        OpenBookResponse openBook = openService.getOpenBookByIsbn(isbn);
-        String firstAuthorKey = openBook.getAuthors().getFirst().getKey();
-        AuthorDto authorDto = authorService.createOpenAuthor(firstAuthorKey);
+        OpenBookResponse openBook = openService.getOpenBookByIsbn(normalizedIsbn);
+        String firstAuthorReferenceKey = openBook.getAuthors().getFirst().getKey();
+        AuthorDto authorDto = authorService.getOrCreateOpenAuthor(firstAuthorReferenceKey);
 
         BookDto bookDto = bookMapper.mapDtoFromOpen(openBook);
         bookDto.setAuthor(authorDto);
 
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
-        bookEntity.setIsbn(isbn);
+        bookEntity.setIsbn(normalizedIsbn);
         BookEntity savedBookEntity = bookRepository.save(bookEntity);
 
         return bookMapper.mapTo(savedBookEntity);

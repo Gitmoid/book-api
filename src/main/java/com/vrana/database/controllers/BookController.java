@@ -3,8 +3,6 @@ package com.vrana.database.controllers;
 import com.vrana.database.domain.dto.ApiErrorResponse;
 import com.vrana.database.domain.dto.BookDto;
 import com.vrana.database.services.BookService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -47,7 +47,6 @@ public class BookController {
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))})})
     @PostMapping(path = "/books/{isbn}")
-
     public ResponseEntity<BookDto> createBook(
             @Parameter(
                     description = "book isbn",
@@ -57,7 +56,7 @@ public class BookController {
         return new ResponseEntity<>(bookService.createBook(isbn, bookDto), HttpStatus.CREATED);
     }
 
-    @PostMapping(path = "/openbooks/{isbn}")
+    @Operation(summary = "Create a new book and populate it with information from openlibrary")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Book from openlibrary created successfully",
                     content = {@Content(mediaType = "application/json",
@@ -71,6 +70,7 @@ public class BookController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))})})
+    @PostMapping(path = "/openbooks/{isbn}")
     public ResponseEntity<BookDto> createOpenBook(
             @Parameter(
                     description = "book isbn to be fetched from openlibrary",

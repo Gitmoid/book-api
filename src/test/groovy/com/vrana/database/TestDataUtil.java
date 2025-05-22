@@ -11,36 +11,41 @@ public final class TestDataUtil {
 
     public static AuthorEntity createTestAuthorEntityA() {
         AuthorEntity author = new AuthorEntity();
+        author.setKey("testA");
         author.setName("Abigail Rose");
-        author.setAge(80);
+        author.setBirthYear(1990);
         return author;
     }
 
     public static AuthorEntity createTestAuthorEntityB() {
         AuthorEntity author = new AuthorEntity();
+        author.setKey("testB");
         author.setName("Thomas Cronin");
-        author.setAge(44);
+        author.setBirthYear(2000);
         return author;
     }
 
     public static AuthorEntity createTestAuthorEntityC() {
         AuthorEntity author = new AuthorEntity();
+        author.setKey("testC");
         author.setName("Jesse A Casey");
-        author.setAge(24);
+        author.setBirthYear(1950);
         return author;
     }
 
     public static AuthorDto createTestAuthorDtoA() {
         AuthorDto author = new AuthorDto();
+        author.setKey("testA");
         author.setName("Abigail Rose");
-        author.setAge(80);
+        author.setBirthYear(1990);
         return author;
     }
 
     public static AuthorDto createTestAuthorDtoB() {
         AuthorDto author = new AuthorDto();
+        author.setKey("testB");
         author.setName("Thomas Cronin");
-        author.setAge(44);
+        author.setBirthYear(2000);
         return author;
     }
 

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class BookDto {
 
-    @Schema(description = "isbn of the book", example = "978-0-571-20692-6", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "isbn of the book", example = "9780571206926", accessMode = Schema.AccessMode.READ_ONLY)
     private String isbn;
 
     @Schema(description = "title of the book", example = "Laughable Loves")

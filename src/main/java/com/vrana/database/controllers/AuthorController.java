@@ -3,8 +3,6 @@ package com.vrana.database.controllers;
 import com.vrana.database.domain.dto.ApiErrorResponse;
 import com.vrana.database.domain.dto.AuthorDto;
 import com.vrana.database.services.AuthorService;
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -47,6 +47,29 @@ public class AuthorController {
     public ResponseEntity<AuthorDto> createAuthor(
             @Valid @RequestBody AuthorDto authorDto) {
         return new ResponseEntity<>(authorService.createAuthor(authorDto), HttpStatus.CREATED);
+    }
+
+    @Operation(summary = "Create a new author and populate them with information from openlibrary")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Author from openlibrary created successfully",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = AuthorDto.class))}),
+            @ApiResponse(responseCode = "400", description = "Invalid request body",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "409", description = "Author already exists",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))}),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ApiErrorResponse.class))})})
+    @PostMapping(path = "/openauthors/{key}")
+    public ResponseEntity<AuthorDto> createOpenAuthor(
+            @Parameter(
+                    description = "author key to be fetched from openlibrary",
+                    required = true)
+            @PathVariable("key") String key) {
+        return new ResponseEntity<>(authorService.createOpenAuthor(key), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get a list of all authors")
@@ -143,7 +166,7 @@ public class AuthorController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))})})
-    @DeleteMapping(path = "authors/{id}")
+    @DeleteMapping(path = "/authors/{id}")
     public ResponseEntity<HttpStatus> deleteAuthor(
             @Parameter(
                     description = "id of author to be deleted",
