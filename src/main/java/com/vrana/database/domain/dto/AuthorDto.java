@@ -1,7 +1,6 @@
 package com.vrana.database.domain.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +21,6 @@ public class AuthorDto {
     @NotBlank(message = "Name cannot be blank")
     private String name;
 
-    @Schema(description = "birth year of the author", example = "1929")
-    @Min(message = "Birth year must be a positive number", value = 0)
-    private Integer birthYear;
+    @Schema(description = "birth date of the author", example = "01 April 1929")
+    private String birthDate;
 }

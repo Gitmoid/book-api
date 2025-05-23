@@ -7,5 +7,5 @@ import lombok.Data;
 public class OpenAuthorResponse {
     private String name;
     @JsonProperty("birth_date")
-    private Integer birthYear;
+    private String birthDate;
 }

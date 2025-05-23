@@ -22,5 +22,5 @@ public class AuthorEntity {
 
     private String key;
     private String name;
-    private Integer birthYear;
+    private String birthDate;
 }

@@ -51,11 +51,13 @@ public class BookServiceImpl implements BookService {
         }
 
         OpenBookResponse openBook = openService.getOpenBookByIsbn(normalizedIsbn);
-        String firstAuthorReferenceKey = openBook.getAuthors().getFirst().getKey();
-        AuthorDto authorDto = authorService.getOrCreateOpenAuthor(firstAuthorReferenceKey);
-
         BookDto bookDto = bookMapper.mapDtoFromOpen(openBook);
-        bookDto.setAuthor(authorDto);
+
+        if (openBook.getAuthors() != null) {
+            String firstAuthorReferenceKey = openBook.getAuthors().getFirst().getKey();
+            AuthorDto authorDto = authorService.getOrCreateOpenAuthor(firstAuthorReferenceKey);
+            bookDto.setAuthor(authorDto);
+        }
 
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);
         bookEntity.setIsbn(normalizedIsbn);
