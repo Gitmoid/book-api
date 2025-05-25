@@ -64,19 +64,19 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public AuthorDto getOrCreateOpenAuthor(String referenceKey) {
-        String authorKey = extractAuthorKey(referenceKey);
+    public AuthorDto getOrCreateOpenAuthor(String key) {
+        String authorKey = extractAuthorKey(key);
         return authorRepository.findByKey(authorKey)
                 .map(authorMapper::mapTo)
                 .orElseGet(() -> createOpenAuthor(authorKey));
     }
 
-    private String extractAuthorKey(String referenceKey) {
-        if (referenceKey.startsWith("/authors/")) {
-            return referenceKey.substring("/authors/".length());
+    private String extractAuthorKey(String key) {
+        if (key.startsWith("/authors/")) {
+            return key.substring("/authors/".length());
         }
 
-        return referenceKey;
+        return key;
     }
 
     @Override

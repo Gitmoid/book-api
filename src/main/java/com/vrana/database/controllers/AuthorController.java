@@ -63,13 +63,13 @@ public class AuthorController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json",
                             schema = @Schema(implementation = ApiErrorResponse.class))})})
-    @PostMapping(path = "/openauthors/{key}")
+    @PostMapping(path = "/openauthors/{authorKey}")
     public ResponseEntity<AuthorDto> createOpenAuthor(
             @Parameter(
                     description = "author key to be fetched from openlibrary",
                     required = true)
-            @PathVariable("key") String key) {
-        return new ResponseEntity<>(authorService.createOpenAuthor(key), HttpStatus.CREATED);
+            @PathVariable("authorKey") String authorKey) {
+        return new ResponseEntity<>(authorService.createOpenAuthor(authorKey), HttpStatus.CREATED);
     }
 
     @Operation(summary = "Get a list of all authors")
