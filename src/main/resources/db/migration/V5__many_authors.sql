@@ -13,3 +13,6 @@ ALTER TABLE book_author
 
 ALTER TABLE books
     ALTER COLUMN isbn SET NOT NULL;
+
+ALTER TABLE books
+    DROP COLUMN author_id;
