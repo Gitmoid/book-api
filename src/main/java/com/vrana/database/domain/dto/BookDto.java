@@ -50,6 +50,6 @@ public class BookDto {
     @Schema(description = "contributions", example = "Rappaport, Suzanne")
     private List<String> contributions;
 
-    @Schema(description = "author of the book")
-    private AuthorDto author;
+    @Schema(description = "set of authors")
+    private List<AuthorDto> authors;
 }

@@ -11,16 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AuthorDto {
 
-    @Schema(description = "id of the author", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "id", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
 
-    @Schema(description = "openlibrary key of the author", example = "PL4326321A")
+    @Schema(description = "openlibrary key", example = "PL4326321A")
     private String key;
 
-    @Schema(description = "name of the author", example = "Milan Kundera")
+    @Schema(description = "name", example = "Milan Kundera")
     @NotBlank(message = "Name cannot be blank")
     private String name;
 
-    @Schema(description = "birth date of the author", example = "01 April 1929")
+    @Schema(description = "birth date", example = "01 April 1929")
     private String birthDate;
 }

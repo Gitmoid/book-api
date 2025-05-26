@@ -13,6 +13,8 @@ public interface AuthorService {
 
     AuthorDto getOrCreateOpenAuthor(String authorKey);
 
+    List<AuthorDto> getOrCreateOpenAuthors(List<String> authorKeys);
+
     List<AuthorDto> findAllAuthors();
 
     AuthorDto findOneOrThrow(Long id);

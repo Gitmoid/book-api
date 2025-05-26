@@ -71,6 +71,13 @@ public class AuthorServiceImpl implements AuthorService {
                 .orElseGet(() -> createOpenAuthor(authorKey));
     }
 
+    @Override
+    public List<AuthorDto> getOrCreateOpenAuthors(List<String> keys) {
+        return keys.stream()
+                .map(this::getOrCreateOpenAuthor)
+                .toList();
+    }
+
     private String extractAuthorKey(String key) {
         if (key.startsWith("/authors/")) {
             return key.substring("/authors/".length());

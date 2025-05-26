@@ -17,6 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -54,9 +57,12 @@ public class BookServiceImpl implements BookService {
         BookDto bookDto = bookMapper.mapDtoFromOpen(openBook);
 
         if (openBook.getAuthors() != null) {
-            String firstAuthorReferenceKey = openBook.getAuthors().getFirst().getKey();
-            AuthorDto authorDto = authorService.getOrCreateOpenAuthor(firstAuthorReferenceKey);
-            bookDto.setAuthor(authorDto);
+            List<String> authorKeys = openBook.getAuthors()
+                    .stream()
+                    .map(OpenBookResponse.AuthorRef::getKey)
+                    .collect(Collectors.toList());
+            List<AuthorDto> authors = authorService.getOrCreateOpenAuthors(authorKeys);
+            bookDto.setAuthors(authors);
         }
 
         BookEntity bookEntity = bookMapper.mapFrom(bookDto);

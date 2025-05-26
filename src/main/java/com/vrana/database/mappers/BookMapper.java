@@ -26,6 +26,6 @@ public interface BookMapper {
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.SET_TO_NULL)
     @Mapping(target = "isbn", ignore = true)
-    @Mapping(target = "author", ignore = true)
+    @Mapping(target = "authors", ignore = true)
     BookDto mapDtoFromOpen(OpenBookResponse openBook);
 }
